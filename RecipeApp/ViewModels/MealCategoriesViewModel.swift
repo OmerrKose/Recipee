@@ -1,0 +1,66 @@
+//
+//  CategoriesViewModel.swift
+//  RecipeApp
+//
+//  Created by Ömer Köse on 30.09.2025.
+//
+
+import Foundation
+import Combine
+
+class MealCategoriesViewModel: ObservableObject {
+    // Loading state for service
+    enum LoadingState {
+        case idle
+        case loading
+        case loaded([Category])
+        case error(String)
+    }
+    
+    // Sort order for categories
+    enum SortOrder {
+        case nameAscending
+        case nameDescending
+    }
+    
+    // Variables
+    @Published var categories: [Category] = []
+    @Published var errorMessage: String?
+    @Published var state: LoadingState = .idle
+    @Published var sortOrder: SortOrder = .nameAscending
+    
+    private let networkService: NetworkServiceProtocol
+    
+    // Init method
+    init(networkService: NetworkServiceProtocol = NetworkService()) {
+        self.networkService = networkService
+    }
+    
+    // MARK: - Sort Variables
+    var sortedCategories: [Category] {
+        guard case .loaded(let categories) = state else {
+            return []
+        }
+        
+        switch sortOrder {
+        case .nameAscending:
+            return categories.sorted { $0.name < $1.name}
+        case .nameDescending:
+            return categories.sorted { $0.name > $1.name}
+        }
+    }
+    
+    
+    // MARK: - Functions
+    func fetchCategories() async {
+        state = .idle
+        errorMessage = nil
+        
+        do {
+            let response: CategoriesResponse = try await self.networkService.fetch(CategoriesResponse.self, from: .categories)
+            state = .loaded(response.categories)
+        } catch {
+            state = .error(error.localizedDescription)
+        }
+    }
+}
