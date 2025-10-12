@@ -1,30 +1,30 @@
 //
-//  CategoriesViewModel.swift
+//  OriginsViewModel.swift
 //  RecipeApp
 //
-//  Created by Ömer Köse on 30.09.2025.
+//  Created by Ömer Köse on 11.10.2025.
 //
 
 import Foundation
 import Combine
 
-class MealCategoriesViewModel: ObservableObject {
+class OriginsViewModel: ObservableObject {
     // Loading state for service
     enum LoadingState {
         case idle
         case loading
-        case loaded([Category])
+        case loaded([Origin])
         case error(String)
     }
     
-    // Sort order for categories
+    // Sort order for origin names
     enum SortOrder {
         case nameAscending
         case nameDescending
     }
     
     // MARK: Variables
-    @Published var categories: [Category] = []
+    @Published var origins: [Origin] = []
     @Published var errorMessage: String?
     @Published var state: LoadingState = .idle
     @Published var sortOrder: SortOrder = .nameAscending
@@ -35,34 +35,33 @@ class MealCategoriesViewModel: ObservableObject {
         self.networkService = networkService
     }
     
-    var sortedCategories: [Category] {
-        guard case .loaded(let categories) = state else {
+    var sortedOrigins: [Origin] {
+        guard case .loaded(let origins) = state else {
             return []
         }
         
         switch sortOrder {
         case .nameAscending:
-            return categories.sorted { $0.name < $1.name}
+            return origins.sorted { $0.name < $1.name}
         case .nameDescending:
-            return categories.sorted { $0.name > $1.name}
+            return origins.sorted { $0.name > $1.name}
         }
     }
     
-    
     // MARK: Service Calls
-    func fetchCategories() async {
+    func fetchOrigins() async {
         state = .loading
         errorMessage = nil
         
         do {
-            let response: CategoriesResponse = try await self.networkService.fetch(CategoriesResponse.self, from: .categories)
+            let response: OriginsResponse = try await self.networkService.fetch(OriginsResponse.self, from: .origins)
             
-            guard let categories = response.categories else {
-                state = .error("No categories found.")
+            guard let origins = response.origins else {
+                state = .error("No origins found.")
                 return
             }
             
-            state = .loaded(categories)
+            state = .loaded(origins)
         } catch {
             state = .error(error.localizedDescription)
         }

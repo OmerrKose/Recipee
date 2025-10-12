@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct MealsRowView: View {
-    var meal: Meal
+/// List element to display a meal with `Origin`, `Category` and `Tags`.
+struct MealsDetailedListRowView: View {
+    var meal: DetailedMeal
     
     var body: some View {
         HStack(spacing: 12) {
@@ -79,7 +80,7 @@ struct MealsRowView: View {
 }
 
 #Preview {
-    let meal = Meal(
+    let meal = DetailedMeal(
         id: "52768",
         name: "Apple Frangipan Tart",
         category: "Dessert",
@@ -111,5 +112,5 @@ struct MealsRowView: View {
         measure10: "", measure11: "", measure12: "", measure13: "", measure14: "", measure15: "", measure16: "", measure17: "", measure18: "", measure19: "", measure20: ""
     )
     
-    MealsRowView(meal: meal)
+    MealsDetailedListRowView(meal: meal)
 }

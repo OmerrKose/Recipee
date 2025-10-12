@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MealDetailView: View {
-    var meal: Meal
+    var meal: DetailedMeal
     
     var body: some View {
         ScrollView(.vertical) {
@@ -100,7 +100,7 @@ struct MealDetailView: View {
                 Spacer()
                 
                 // Youtube link
-                if let link = meal.youtubeURL {
+                if let link = meal.youtubeURL, !link.isEmpty {
                     TitleAndExplanationView(
                         title: "Youtube",
                         imageName: "video",
@@ -108,7 +108,7 @@ struct MealDetailView: View {
                     )
                 }
                 
-                if let source = meal.source {
+                if let source = meal.source, !source.isEmpty {
                     TitleAndExplanationView(
                         title: "Source",
                         explanation: source,
@@ -121,6 +121,7 @@ struct MealDetailView: View {
             .padding(.bottom)
             
         } //: ScrollView
+        .background(Color(.secondarySystemBackground))
         .navigationTitle(meal.name)
         .navigationBarTitleDisplayMode(.inline)
         .scrollIndicators(.hidden)
@@ -129,7 +130,7 @@ struct MealDetailView: View {
 }
 
 #Preview {
-    let meal = Meal(
+    let meal = DetailedMeal(
         id: "52768",
         name: "Apple Frangipan Tart",
         category: "Dessert",

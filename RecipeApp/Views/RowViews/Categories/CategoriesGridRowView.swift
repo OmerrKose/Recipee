@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct CategoriesRowView: View {
+/// List element to display a category.
+struct CategoriesGridRowView: View {
     var category: Category
     
     var body: some View {
@@ -72,5 +73,5 @@ struct CategoriesRowView: View {
         thumbnailString: "https://www.themealdb.com/images/category/pasta.png",
         description: "Pasta is a staple food of traditional Italian cuisine, with the most common variety being spaghetti. It is a long, thin pasta made from wheat flour, water, and salt, and is often served with a variety of sauces, meats, and vegetables."
     )
-    CategoriesRowView(category: category)
+    CategoriesGridRowView(category: category)
 }

@@ -7,9 +7,10 @@
 
 import SwiftUI
 
+/// The tab view that displays all the views.
 struct MainTabView: View {
     @EnvironmentObject var categoriesViewModel: MealCategoriesViewModel
-    @EnvironmentObject var allMealsViewMdodel: AllMealsViewModel
+    @EnvironmentObject var allMealsViewMdodel: DetailedMealViewModel
     
     var body: some View {
         TabView {
@@ -42,5 +43,5 @@ struct MainTabView: View {
 #Preview {
     MainTabView()
         .environmentObject(MealCategoriesViewModel())
-        .environmentObject(AllMealsViewModel())
+        .environmentObject(DetailedMealViewModel())
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TabItem: View {
+struct CategoriesTabItem: View {
     let title: String
     let isSelected: Bool
     let namespace: Namespace.ID
@@ -43,7 +43,7 @@ struct TabItem: View {
     
     VStack(spacing: 40) {
         // Selected state
-        TabItem(
+        CategoriesTabItem(
             title: "Categories",
             isSelected: true,
             namespace: animation
@@ -53,7 +53,7 @@ struct TabItem: View {
         .frame(width: 120)
         
         // Unselected state
-        TabItem(
+        CategoriesTabItem(
             title: "Origins",
             isSelected: false,
             namespace: animation
@@ -64,19 +64,19 @@ struct TabItem: View {
         
         // All tabs together
         HStack(spacing: 0) {
-            TabItem(
+            CategoriesTabItem(
                 title: "Categories",
                 isSelected: true,
                 namespace: animation
             ) {}
             
-            TabItem(
+            CategoriesTabItem(
                 title: "Origins",
                 isSelected: false,
                 namespace: animation
             ) {}
             
-            TabItem(
+            CategoriesTabItem(
                 title: "Ingredients",
                 isSelected: false,
                 namespace: animation

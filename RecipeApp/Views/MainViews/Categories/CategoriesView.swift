@@ -13,6 +13,7 @@ enum CategoryTab: String, CaseIterable {
     case ingredients = "Ingredients"
 }
 
+/// Main view for categories, displays in 3, `Categories`, `Origins`, and `Ingredients`
 struct CategoriesView: View {
     @State private var selectedTab: CategoryTab = .categories
     @Namespace private var animation
@@ -23,7 +24,7 @@ struct CategoriesView: View {
                 // Tab bar
                 HStack(spacing: 0) {
                     ForEach(CategoryTab.allCases, id: \.self) { tab in
-                        TabItem(
+                        CategoriesTabItem(
                             title: tab.rawValue,
                             isSelected: selectedTab == tab,
                             namespace: animation
@@ -36,24 +37,24 @@ struct CategoriesView: View {
                 } //: HStack
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(Color(.secondarySystemBackground))
                 
                 // Content
                 ZStack {
                     switch selectedTab {
                     case .categories:
-                        MealCategoriesView()
+                        MealCategoriesGridView()
                     case .origins:
-                        EmptyView()
+                        OriginsListView()
                     case .ingredients:
                         EmptyView()
                     }
                 } //: ZStack
                 .frame(maxHeight: .infinity)
-                .background(Color(.secondarySystemBackground))
                 
             } //: VStack
+            .background(Color(.secondarySystemBackground))
             .navigationTitle(selectedTab.rawValue)
+            
         } //: NavigationStack
     }
 }
@@ -61,4 +62,5 @@ struct CategoriesView: View {
 #Preview {
     CategoriesView()
         .environmentObject(MealCategoriesViewModel())
+        .environmentObject(OriginsViewModel())
 }
