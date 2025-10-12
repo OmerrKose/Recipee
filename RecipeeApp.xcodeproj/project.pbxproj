@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0F3344B12E8C4E4A00EAD4C1 /* RecipeApp */ = {
+		0F3344B12E8C4E4A00EAD4C1 /* Recipee */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RecipeApp;
+			path = Recipee;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		0F3344A62E8C4E4A00EAD4C1 = {
 			isa = PBXGroup;
 			children = (
-				0F3344B12E8C4E4A00EAD4C1 /* RecipeApp */,
+				0F3344B12E8C4E4A00EAD4C1 /* Recipee */,
 				0F3344B02E8C4E4A00EAD4C1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0F3344B12E8C4E4A00EAD4C1 /* RecipeApp */,
+				0F3344B12E8C4E4A00EAD4C1 /* Recipee */,
 			);
 			name = RecipeApp;
 			packageProductDependencies = (
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 0F3344AA2E8C4E4A00EAD4C1 /* Build configuration list for PBXProject "RecipeApp" */;
+			buildConfigurationList = 0F3344AA2E8C4E4A00EAD4C1 /* Build configuration list for PBXProject "RecipeeApp" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -313,7 +313,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0F3344AA2E8C4E4A00EAD4C1 /* Build configuration list for PBXProject "RecipeApp" */ = {
+		0F3344AA2E8C4E4A00EAD4C1 /* Build configuration list for PBXProject "RecipeeApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0F3344B82E8C4E4B00EAD4C1 /* Debug */,

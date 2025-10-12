@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct RecipeAppApp: App {
+struct RecipeeApp: App {
     @AppStorage("isDarkMode") private var isDarkMode = false
     
     var body: some Scene {
