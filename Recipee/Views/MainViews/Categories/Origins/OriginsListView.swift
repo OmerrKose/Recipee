@@ -21,21 +21,18 @@ struct OriginsListView: View {
                 ProgressView("Loading...")
                 
             case .loaded:
-                ScrollView(.vertical) {
-                    LazyVStack(alignment: .leading, spacing: 12) {
-                        ForEach(viewModel.sortedOrigins) { origin in
-                            NavigationLink {
-                                OriginMealsListView(originName: origin.name)
-                            } label: {
-                                OriginsListRowView(origin: origin)
-                                    .padding(.horizontal, 8)
-                            }
-                            .buttonStyle(.plain)
-                            
-                        } //: Loop
-                    } //: LazyVStack
-                } //: ScrollView
-                .scrollIndicators(.hidden)
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    ForEach(viewModel.sortedOrigins) { origin in
+                        NavigationLink {
+                            OriginMealsListView(originName: origin.name)
+                        } label: {
+                            OriginsListRowView(origin: origin)
+                                .padding(.horizontal, 8)
+                        }
+                        .buttonStyle(.plain)
+                        
+                    } //: Loop
+                } //: LazyVStack
                 
             case .error(let message):
                 ServiceErrorView(message: message) {

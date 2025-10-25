@@ -15,55 +15,74 @@ struct CategoriesTabItem: View {
     
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 8) {
+            VStack(spacing: 6) {
                 Text(title)
-                    .font(.subheadline.weight(isSelected ? .semibold : .medium))
-                    .foregroundStyle(isSelected ? .primary : .secondary)
+                    .font(.system(.subheadline, design: .rounded))
+                    .fontWeight(isSelected ? .semibold : .medium)
+                    .foregroundStyle(isSelected ? .primary : Color.secondary.opacity(0.8))
                     .frame(maxWidth: .infinity)
-                
-                if isSelected {
-                    Capsule()
-                        .fill(Color.accentColor)
-                        .frame(height: 3)
-                        .matchedGeometryEffect(id: "tab", in: namespace)
-                } else {
-                    Capsule()
-                        .fill(Color.clear)
-                        .frame(height: 3)
+            } //: VStack
+            .padding(.vertical, 12)
+            .padding(.horizontal, 4)
+            .background(
+                Group {
+                    if isSelected {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.accentColor.opacity(0.2))
+                            .matchedGeometryEffect(id: "tab-background", in: namespace)
+                    } else {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.clear)
+                    }
                 }
-            }
-            .padding(.vertical, 8)
+            )
+            .overlay(
+                Group {
+                    if isSelected {
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
+                            .matchedGeometryEffect(id: "tab-border", in: namespace)
+                    } else {
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.clear, lineWidth: 1)
+                    }
+                }
+            )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityHint(isSelected ? "Currently selected" : "Tap to select")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
 #Preview("Tab Item States") {
     @Previewable @Namespace var animation
     
-    VStack(spacing: 40) {
-        // Selected state
-        CategoriesTabItem(
-            title: "Categories",
-            isSelected: true,
-            namespace: animation
-        ) {
-            print("Categories tapped")
+    VStack(spacing: 30) {
+        // Individual states
+        HStack(spacing: 20) {
+            CategoriesTabItem(
+                title: "Categories",
+                isSelected: true,
+                namespace: animation
+            ) {
+                print("Categories tapped")
+            }
+            .frame(width: 120)
+            
+            CategoriesTabItem(
+                title: "Origins",
+                isSelected: false,
+                namespace: animation
+            ) {
+                print("Origins tapped")
+            }
+            .frame(width: 120)
         }
-        .frame(width: 120)
         
-        // Unselected state
-        CategoriesTabItem(
-            title: "Origins",
-            isSelected: false,
-            namespace: animation
-        ) {
-            print("Origins tapped")
-        }
-        .frame(width: 120)
-        
-        // All tabs together
-        HStack(spacing: 0) {
+        // Complete tab bar
+        HStack(spacing: 8) {
             CategoriesTabItem(
                 title: "Categories",
                 isSelected: true,
@@ -82,8 +101,14 @@ struct CategoriesTabItem: View {
                 namespace: animation
             ) {}
         }
-        .padding()
-        .background(Color(.secondarySystemBackground))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.secondarySystemBackground))
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        )
     }
     .padding()
+    .background(Color(.systemBackground))
 }
