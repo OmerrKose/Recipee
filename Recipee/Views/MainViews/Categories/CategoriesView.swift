@@ -25,7 +25,7 @@ struct CategoriesView: View {
                     // Enhanced Tab bar with better styling
                     HStack(spacing: 8) {
                         ForEach(CategoryTab.allCases, id: \.self) { tab in
-                            CategoriesTab(
+                            TabBar(
                                 title: tab.rawValue,
                                 isSelected: selectedTab == tab,
                                 namespace: animation

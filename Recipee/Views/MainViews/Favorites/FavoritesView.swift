@@ -10,6 +10,7 @@ import SwiftUI
 struct FavoritesView: View {
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     @State private var selectedTab: FavoriteTab = .meals
+    @Namespace private var animation
     
     enum FavoriteTab: String, CaseIterable {
         case meals = "Meals"
@@ -18,49 +19,34 @@ struct FavoritesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Tab bar
-                HStack(spacing: 8) {
-                    ForEach(FavoriteTab.allCases, id: \.self) { tab in
-                        Button(action: {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                selectedTab = tab
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Enhanced Tab bar with better styling
+                    HStack(spacing: 8) {
+                        ForEach(FavoriteTab.allCases, id: \.self) { tab in
+                            TabBar(
+                                title: tab.rawValue,
+                                isSelected: selectedTab == tab,
+                                namespace: animation
+                            ) {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    selectedTab = tab
+                                }
                             }
-                        }) {
-                            VStack(spacing: 6) {
-                                Text(tab.rawValue)
-                                    .font(.system(.subheadline, design: .rounded))
-                                    .fontWeight(selectedTab == tab ? .semibold : .medium)
-                                    .foregroundStyle(selectedTab == tab ? .primary : Color.secondary.opacity(0.8))
-                                    .frame(maxWidth: .infinity)
-                            }
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 4)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(selectedTab == tab ? Color.accentColor.opacity(0.1) : Color.clear)
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(selectedTab == tab ? Color.accentColor.opacity(0.3) : Color.clear, lineWidth: 1)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(.tertiarySystemBackground))
-                        .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 2)
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 16)
-                
-                // Content
-                ScrollView {
+                        } //: Loop
+                    } //: HStack
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color(.tertiarySystemBackground))
+                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 2)
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 16) // Add padding between tab bar and content
+                    
+                    // Content
                     switch selectedTab {
                     case .meals:
                         if favoritesViewModel.favoriteMeals.isEmpty {
@@ -108,10 +94,9 @@ struct FavoritesView: View {
                         }
                     }
                 }
+                .navigationTitle("Favorites")
+                .navigationBarTitleDisplayMode(.large)
             }
-            .background(Color(.secondarySystemBackground))
-            .navigationTitle("Favorites")
-            .navigationBarTitleDisplayMode(.large)
         }
     }
 }
