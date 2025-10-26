@@ -30,6 +30,7 @@ class MealViewModel: ObservableObject {
     @Published var sortOrder: SortOrder = .nameAscending
     
     private let networkService: NetworkServiceProtocol
+    private var fetchTask: Task<Void, Never>?
     
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
@@ -53,41 +54,81 @@ class MealViewModel: ObservableObject {
     ///  - Parameters:
     ///    - country: The origin of the meals.
     func fetchMeals(from country: String) async {
-        state = .loading
-        errorMessage = nil
+        // Cancel any existing fetch task
+        fetchTask?.cancel()
         
-        do {
-            let response: MealsResponse = try await self.networkService.fetch(MealsResponse.self, from: .mealByOrigin(country: country))
+        // Create new task
+        fetchTask = Task {
+            state = .loading
+            errorMessage = nil
             
-            guard let meals = response.meals else {
-                state = .error("No meals found for this origin.")
-                return
+            do {
+                let response: MealsResponse = try await self.networkService.fetch(MealsResponse.self, from: .mealByOrigin(country: country))
+                
+                guard let meals = response.meals else {
+                    state = .error("No meals found for this origin.")
+                    return
+                }
+                
+                state = .loaded(meals)
+            } catch {
+                // Handle cancellation specifically - don't update state if cancelled
+                if error is CancellationError {
+                    return
+                }
+                
+                // Only update state if task is not cancelled
+                if !Task.isCancelled {
+                    if let networkError = error as? NetworkError {
+                        state = .error(networkError.errorDescription ?? "Network error occurred")
+                    } else {
+                        state = .error("Failed to fetch meals: \(error.localizedDescription)")
+                    }
+                }
             }
-            
-            state = .loaded(meals)
-        } catch {
-            state = .error(error.localizedDescription)
         }
+        
+        await fetchTask?.value
     }
     
     /// Fetch meals by category.
     /// - Parameters:
     ///    - category: The meal category that needs to be fetched.
     func fetchMeals(with category: String) async {
-        state = .loading
-        errorMessage = nil
+        // Cancel any existing fetch task
+        fetchTask?.cancel()
         
-        do {
-            let response: MealsResponse = try await self.networkService.fetch(MealsResponse.self, from: .mealByCategory(category: category))
+        // Create new task
+        fetchTask = Task {
+            state = .loading
+            errorMessage = nil
             
-            guard let meals = response.meals else {
-                state = .error("No meals found for this category.")
-                return
+            do {
+                let response: MealsResponse = try await self.networkService.fetch(MealsResponse.self, from: .mealByCategory(category: category))
+                
+                guard let meals = response.meals else {
+                    state = .error("No meals found for this category.")
+                    return
+                }
+                
+                state = .loaded(meals)
+            } catch {
+                // Handle cancellation specifically - don't update state if cancelled
+                if error is CancellationError {
+                    return
+                }
+                
+                // Only update state if task is not cancelled
+                if !Task.isCancelled {
+                    if let networkError = error as? NetworkError {
+                        state = .error(networkError.errorDescription ?? "Network error occurred")
+                    } else {
+                        state = .error("Failed to fetch meals: \(error.localizedDescription)")
+                    }
+                }
             }
-            
-            state = .loaded(meals)
-        } catch {
-            state = .error(error.localizedDescription)
         }
+        
+        await fetchTask?.value
     }
 }
