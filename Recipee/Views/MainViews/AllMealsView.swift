@@ -19,7 +19,7 @@ struct AllMealsView: View {
                     Color.clear.task { await viewModel.fetchMeals() }
                     
                 case .loading:
-                    ProgressView("Loading...")
+                    LoadingView("Loading meals...")
                     
                 case .loaded(let meals):
                     ScrollView(.vertical) {

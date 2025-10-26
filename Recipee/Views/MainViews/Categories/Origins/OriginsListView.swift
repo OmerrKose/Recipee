@@ -18,7 +18,8 @@ struct OriginsListView: View {
                 Color.clear.task { await viewModel.fetchOrigins() }
                 
             case .loading:
-                ProgressView("Loading...")
+                LoadingView("Loading origins...", fullScreen: false)
+                    .frame(minHeight: 400)
                 
             case .loaded:
                 LazyVStack(alignment: .leading, spacing: 12) {

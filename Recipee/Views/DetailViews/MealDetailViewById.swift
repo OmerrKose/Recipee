@@ -17,7 +17,7 @@ struct MealDetailViewById: View {
         ZStack {
             switch viewModel.state {
             case .idle, .loading:
-                ProgressView("Loading meal details...")
+                LoadingView("Loading meal details...")
                 
             case .loaded(let meals):
                 if let meal = meals.first {

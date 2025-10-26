@@ -17,8 +17,9 @@ struct MealCategoriesGridView: View {
             case .idle:
                 Color.clear.task { await viewModel.fetchCategories() }
                 
-            case .loading:
-                ProgressView("Loading...")
+                case .loading:
+                    LoadingView("Loading categories...", fullScreen: false)
+                        .frame(minHeight: 400)
                 
             case .loaded:
                 LazyVGrid(columns: [
