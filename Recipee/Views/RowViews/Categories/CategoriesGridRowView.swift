@@ -39,7 +39,7 @@ struct CategoriesGridRowView: View {
                 } //: AsyncImage
                 .frame(maxWidth: .infinity)
                 .frame(height: 180)
-                .clipped()
+                .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 LinearGradient(
                     colors: [.clear, .black.opacity(0.7)],
@@ -47,6 +47,7 @@ struct CategoriesGridRowView: View {
                     endPoint: .bottom
                 )
                 .frame(height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 Text(category.name)
                     .font(.headline.weight(.bold))
@@ -72,12 +73,14 @@ struct CategoriesGridRowView: View {
             } //: ZStack
         } //: VStack
         .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 6)
+        )
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.systemGray5).opacity(0.5), lineWidth: 0.5)
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color(.systemGray5).opacity(0.3), lineWidth: 1)
         )
     }
 }

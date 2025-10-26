@@ -45,7 +45,7 @@ struct AllMealsView: View {
                     }
                 } //: Switch
             } //: ZStack
-            .background(Color(.secondarySystemBackground))
+            .background(Color(.systemBackground))
             .navigationTitle("Meals")
             .withSettings()
             

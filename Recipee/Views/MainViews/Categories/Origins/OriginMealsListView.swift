@@ -46,7 +46,7 @@ struct OriginMealsListView: View {
                 
             } //: Switch
         } //: ZStack
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle(originName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

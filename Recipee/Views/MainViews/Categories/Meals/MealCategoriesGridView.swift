@@ -17,9 +17,9 @@ struct MealCategoriesGridView: View {
             case .idle:
                 Color.clear.task { await viewModel.fetchCategories() }
                 
-                case .loading:
-                    LoadingView("Loading categories...", fullScreen: false)
-                        .frame(minHeight: 400)
+            case .loading:
+                LoadingView("Loading categories...", fullScreen: false)
+                    .frame(minHeight: 400)
                 
             case .loaded:
                 LazyVGrid(columns: [
@@ -44,7 +44,7 @@ struct MealCategoriesGridView: View {
                 
             } //: Switch
         } //: ZStack
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle("Categories")
         .withSettings()
         .toolbar {

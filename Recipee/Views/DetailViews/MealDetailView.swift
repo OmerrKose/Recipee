@@ -123,7 +123,7 @@ struct MealDetailView: View {
             .padding(.bottom)
             
         } //: ScrollView
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle(meal.name)
         .navigationBarTitleDisplayMode(.inline)
         .scrollIndicators(.hidden)

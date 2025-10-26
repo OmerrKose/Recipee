@@ -38,9 +38,9 @@ struct FavoritesView: View {
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                     .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color(.tertiarySystemBackground))
-                            .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 2)
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(.systemBackground))
+                            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
                     )
                     .padding(.horizontal, 16)
                     .padding(.top, 8)

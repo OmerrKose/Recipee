@@ -43,7 +43,7 @@ struct OriginsListView: View {
                 
             } //: Switch
         } //: ZStack
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle("Origins")
         .withSettings()
         .toolbar {
