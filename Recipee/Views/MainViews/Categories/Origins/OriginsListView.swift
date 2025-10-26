@@ -25,6 +25,7 @@ struct OriginsListView: View {
                     ForEach(viewModel.sortedOrigins) { origin in
                         NavigationLink {
                             OriginMealsListView(originName: origin.name)
+                                .environmentObject(MealViewModel())
                         } label: {
                             OriginsListRowView(origin: origin)
                                 .padding(.horizontal, 8)

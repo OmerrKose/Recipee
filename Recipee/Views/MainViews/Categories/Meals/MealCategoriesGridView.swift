@@ -28,6 +28,7 @@ struct MealCategoriesGridView: View {
                     ForEach(viewModel.sortedCategories) { category in
                         NavigationLink {
                             MealCategoriesListView(mealCategory: category.name)
+                                .environmentObject(MealViewModel())
                         } label: {
                             CategoriesGridRowView(category: category)
                         }
