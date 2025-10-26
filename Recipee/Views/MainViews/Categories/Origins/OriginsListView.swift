@@ -45,7 +45,6 @@ struct OriginsListView: View {
         } //: ZStack
         .background(Color(.systemBackground))
         .navigationTitle("Origins")
-        .withSettings()
         .toolbar {
             SortMenu(
                 sortOrder: $viewModel.sortOrder,

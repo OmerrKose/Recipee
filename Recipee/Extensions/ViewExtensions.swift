@@ -7,9 +7,4 @@
 
 import SwiftUI
 
-extension View {
-    /// Adds setings toolbar as a button.
-    func withSettings() -> some View {
-        modifier(SettingsToolbarModifier())
-    }
-}
+// ViewExtensions - Reserved for future view extensions

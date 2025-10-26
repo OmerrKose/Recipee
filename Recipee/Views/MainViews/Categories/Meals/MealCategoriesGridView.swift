@@ -46,7 +46,6 @@ struct MealCategoriesGridView: View {
         } //: ZStack
         .background(Color(.systemBackground))
         .navigationTitle("Categories")
-        .withSettings()
         .toolbar {
             SortMenu(
                 sortOrder: $viewModel.sortOrder,

@@ -31,6 +31,11 @@ struct MainTabView: View {
                 FavoritesView()
             }
             
+            // Settings
+            Tab("Settings", systemImage: "gear") {
+                SettingsView()
+            }
+            
             // Search
             Tab("Search", systemImage: "magnifyingglass", role: .search) {
                 SearchView()
