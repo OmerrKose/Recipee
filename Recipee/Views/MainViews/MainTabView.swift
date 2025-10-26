@@ -26,7 +26,7 @@ struct MainTabView: View {
             
             // Favorites
             Tab("Favorites", systemImage: "star.fill") {
-                EmptyView() // TODO: Add favorites
+                FavoritesView()
             }
             
             // Search
@@ -44,4 +44,5 @@ struct MainTabView: View {
     MainTabView()
         .environmentObject(MealCategoriesViewModel())
         .environmentObject(DetailedMealViewModel())
+        .environmentObject(FavoritesViewModel())
 }

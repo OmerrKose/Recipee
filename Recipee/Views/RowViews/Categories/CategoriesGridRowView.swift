@@ -10,6 +10,7 @@ import SwiftUI
 /// List element to display a category.
 struct CategoriesGridRowView: View {
     var category: Category
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -53,6 +54,21 @@ struct CategoriesGridRowView: View {
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
                     .shadow(radius: 2)
+                
+                // Favorite button in top-right corner
+                VStack {
+                    HStack {
+                        Spacer()
+                        FavoriteButton(
+                            isFavorite: favoritesViewModel.isCategoryFavorite(category)
+                        ) {
+                            favoritesViewModel.toggleCategoryFavorite(category)
+                        }
+                        .padding(.top, 8)
+                        .padding(.trailing, 8)
+                    }
+                    Spacer()
+                }
             } //: ZStack
         } //: VStack
         .frame(maxWidth: .infinity)
@@ -74,4 +90,5 @@ struct CategoriesGridRowView: View {
         description: "Pasta is a staple food of traditional Italian cuisine, with the most common variety being spaghetti. It is a long, thin pasta made from wheat flour, water, and salt, and is often served with a variety of sauces, meats, and vegetables."
     )
     CategoriesGridRowView(category: category)
+        .environmentObject(FavoritesViewModel())
 }

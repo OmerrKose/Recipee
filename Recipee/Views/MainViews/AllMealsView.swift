@@ -56,4 +56,5 @@ struct AllMealsView: View {
 #Preview {
     AllMealsView()
         .environmentObject(DetailedMealViewModel())
+        .environmentObject(FavoritesViewModel())
 }

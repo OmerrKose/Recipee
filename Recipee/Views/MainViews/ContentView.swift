@@ -12,6 +12,7 @@ struct ContentView: View {
     @StateObject private var allMealsViewModel = DetailedMealViewModel()
     @StateObject private var originsViewModel = OriginsViewModel()
     @StateObject private var originMealsViewModel = MealViewModel()
+    @StateObject private var favoritesViewModel = FavoritesViewModel()
     
     var body: some View {
         MainTabView()
@@ -19,6 +20,7 @@ struct ContentView: View {
             .environmentObject(allMealsViewModel)
             .environmentObject(originsViewModel)
             .environmentObject(originMealsViewModel)
+            .environmentObject(favoritesViewModel)
     }
 }
 

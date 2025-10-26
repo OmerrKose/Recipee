@@ -10,6 +10,8 @@ import SwiftUI
 struct MealDetailView: View {
     var meal: DetailedMeal
     
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    
     var body: some View {
         ScrollView(.vertical) {
             
@@ -126,6 +128,15 @@ struct MealDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .scrollIndicators(.hidden)
         .ignoresSafeArea(edges: .top)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                FavoriteButton(
+                    isFavorite: favoritesViewModel.isMealFavorite(meal)
+                ) {
+                    favoritesViewModel.toggleMealFavorite(meal)
+                }
+            }
+        }
     }
 }
 
@@ -162,5 +173,8 @@ struct MealDetailView: View {
         measure10: "", measure11: "", measure12: "", measure13: "", measure14: "", measure15: "", measure16: "", measure17: "", measure18: "", measure19: "", measure20: ""
     )
     
-    MealDetailView(meal: meal)
+    NavigationStack {
+        MealDetailView(meal: meal)
+            .environmentObject(FavoritesViewModel())
+    }
 }

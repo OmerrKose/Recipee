@@ -52,6 +52,8 @@ struct MealCategoriesListView: View {
 }
 
 #Preview {
-    MealCategoriesListView(mealCategory: "Dessert")
-        .environmentObject(MealViewModel())
+    NavigationStack {
+        MealCategoriesListView(mealCategory: "Dessert")
+            .environmentObject(MealViewModel())
+    }
 }

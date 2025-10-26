@@ -22,6 +22,7 @@ struct MealDetailViewById: View {
             case .loaded(let meals):
                 if let meal = meals.first {
                     MealDetailView(meal: meal)
+                        .environmentObject(FavoritesViewModel())
                 } else {
                     ContentUnavailableView(
                         "Meal Not Found",
@@ -43,6 +44,8 @@ struct MealDetailViewById: View {
 }
 
 #Preview {
-    MealDetailViewById(mealId: "52772")
-        .environmentObject(DetailedMealViewModel())
+    NavigationStack {
+        MealDetailViewById(mealId: "52772")
+            .environmentObject(DetailedMealViewModel())
+    }
 }

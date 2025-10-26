@@ -68,5 +68,6 @@ struct MealCategoriesGridView: View {
     NavigationStack {
         MealCategoriesGridView()
             .environmentObject(MealCategoriesViewModel())
+            .environmentObject(FavoritesViewModel())
     }
 }

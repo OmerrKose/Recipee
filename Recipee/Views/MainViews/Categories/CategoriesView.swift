@@ -74,4 +74,5 @@ struct CategoriesView: View {
         .environmentObject(MealCategoriesViewModel())
         .environmentObject(OriginsViewModel())
         .environmentObject(MealViewModel())
+        .environmentObject(FavoritesViewModel())
 }
