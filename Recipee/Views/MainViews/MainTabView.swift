@@ -11,6 +11,8 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var categoriesViewModel: MealCategoriesViewModel
     @EnvironmentObject var allMealsViewMdodel: DetailedMealViewModel
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    @StateObject private var searchViewModel = SearchViewModel()
     
     var body: some View {
         TabView {
@@ -31,12 +33,19 @@ struct MainTabView: View {
             
             // Search
             Tab("Search", systemImage: "magnifyingglass", role: .search) {
-                NavigationStack {
-                    SearchView()
-                }
+                SearchView()
+                    .environmentObject(searchViewModel)
+                    .searchable(
+                        text: $searchViewModel.searchText,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Search meals, categories, origins..."
+                    )
             }
         } //: TabView
         .tabBarMinimizeBehavior(.onScrollDown)
+        .onAppear {
+            searchViewModel.favoritesViewModel = favoritesViewModel
+        }
     }
 }
 
