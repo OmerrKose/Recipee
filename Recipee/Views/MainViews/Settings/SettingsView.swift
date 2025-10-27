@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage("searchHistoryEnabled") private var searchHistoryEnabled = true
     @AppStorage("autoSuggestionsEnabled") private var autoSuggestionsEnabled = true
     
+    @EnvironmentObject var searchViewModel: SearchViewModel
+    
     @State private var showingClearFavoritesAlert = false
     @State private var showingClearSearchHistoryAlert = false
     
@@ -34,6 +36,12 @@ struct SettingsView: View {
                 Section(header: Text("Search & Discovery")) {
                     Toggle(isOn: $searchHistoryEnabled) {
                         Label("Search History", systemImage: "clock")
+                    }
+                    .onChange(of: searchHistoryEnabled) { oldValue, newValue in
+                        // Clear history when disabled
+                        if !newValue {
+                            searchViewModel.clearSearchHistory()
+                        }
                     }
                     
                     Toggle(isOn: $autoSuggestionsEnabled) {
@@ -103,7 +111,7 @@ struct SettingsView: View {
         .alert("Clear Search History", isPresented: $showingClearSearchHistoryAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Clear", role: .destructive) {
-                // Clear search history logic
+                searchViewModel.clearSearchHistory()
             }
         } message: {
             Text("This will clear all your search history. This action cannot be undone.")
@@ -113,4 +121,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
+        .environmentObject(SearchViewModel())
 }

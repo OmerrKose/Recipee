@@ -34,6 +34,7 @@ struct MainTabView: View {
             // Settings
             Tab("Settings", systemImage: "gear") {
                 SettingsView()
+                    .environmentObject(searchViewModel)
             }
             
             // Search
@@ -45,6 +46,9 @@ struct MainTabView: View {
                         placement: .navigationBarDrawer(displayMode: .always),
                         prompt: "Search meals, categories, origins..."
                     )
+                    .onSubmit(of: .search) {
+                        searchViewModel.commitSearch()
+                    }
             }
         } //: TabView
         .tabBarMinimizeBehavior(.onScrollDown)

@@ -14,30 +14,45 @@ class SearchViewModel: ObservableObject {
     @Published var searchResults: SearchResults = SearchResults()
     @Published var isLoading: Bool = false
     @Published var hasSearched: Bool = false
+    @Published var searchHistory: [String] = []
     
     // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
+    private let searchHistoryKey = "searchHistory"
+    private let maxHistoryCount = 20
+    private var shouldSaveToHistory: Bool = false
     
     // MARK: - Dependencies
     @Published var favoritesViewModel: FavoritesViewModel?
     
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
+        loadSearchHistory()
         
-        // Debounce search text changes
+        // Debounce search text changes for live search (without saving to history)
         $searchText
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
             .sink { [weak self] searchText in
-                self?.performSearch(searchText)
+                guard let self = self else { return }
+                // Only search if text is not empty
+                if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self.performSearch(searchText, saveToHistory: false)
+                }
             }
             .store(in: &cancellables)
     }
     
     // MARK: - Search Methods
-    private func performSearch(_ query: String) {
+    func commitSearch() {
+        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        shouldSaveToHistory = true
+        performSearch(searchText, saveToHistory: true)
+    }
+    
+    private func performSearch(_ query: String, saveToHistory: Bool = false) {
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             searchResults = SearchResults()
             hasSearched = false
@@ -46,6 +61,7 @@ class SearchViewModel: ObservableObject {
         
         hasSearched = true
         isLoading = true
+        shouldSaveToHistory = saveToHistory
         
         // Cancel any existing search
         searchTask?.cancel()
@@ -82,6 +98,12 @@ class SearchViewModel: ObservableObject {
         
         searchResults = results
         isLoading = false
+        
+        // Add to search history only if the user committed the search
+        if shouldSaveToHistory {
+            addToSearchHistory(query)
+            shouldSaveToHistory = false
+        }
     }
     
     private func searchCategories(_ query: String) async -> [Category]? {
@@ -157,9 +179,61 @@ class SearchViewModel: ObservableObject {
     }
     
     func clearSearch() {
+        // Cancel any ongoing search
+        searchTask?.cancel()
+        
+        // Reset state
         searchText = ""
         searchResults = SearchResults()
         hasSearched = false
+        isLoading = false
+    }
+    
+    // MARK: - Search History Methods
+    private func addToSearchHistory(_ query: String) {
+        // Check if search history is enabled
+        guard UserDefaults.standard.bool(forKey: "searchHistoryEnabled") else { return }
+        
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty else { return }
+        
+        // Remove if already exists
+        searchHistory.removeAll { $0.caseInsensitiveCompare(trimmedQuery) == .orderedSame }
+        
+        // Add to beginning
+        searchHistory.insert(trimmedQuery, at: 0)
+        
+        // Keep only max items
+        if searchHistory.count > maxHistoryCount {
+            searchHistory = Array(searchHistory.prefix(maxHistoryCount))
+        }
+        
+        saveSearchHistory()
+    }
+    
+    func selectFromHistory(_ query: String) {
+        searchText = query
+        shouldSaveToHistory = false  // Don't save when re-selecting from history
+    }
+    
+    func removeFromHistory(_ query: String) {
+        searchHistory.removeAll { $0 == query }
+        saveSearchHistory()
+    }
+    
+    func clearSearchHistory() {
+        searchHistory.removeAll()
+        saveSearchHistory()
+    }
+    
+    private func saveSearchHistory() {
+        UserDefaults.standard.set(searchHistory, forKey: searchHistoryKey)
+    }
+    
+    private func loadSearchHistory() {
+        if let history = UserDefaults.standard.stringArray(forKey: searchHistoryKey) {
+            searchHistory = history
+        }
     }
 }
 

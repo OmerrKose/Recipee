@@ -10,6 +10,8 @@ import SwiftUI
 struct SearchView: View {
     @EnvironmentObject var searchViewModel: SearchViewModel
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    @AppStorage("searchHistoryEnabled") private var searchHistoryEnabled = true
+    @State private var isSuggestionsPresented = true
     
     var body: some View {
         NavigationStack {
@@ -19,7 +21,14 @@ struct SearchView: View {
                     LoadingView("Searching...", fullScreen: false)
                         .frame(minHeight: 400)
                 } else if !searchViewModel.hasSearched {
-                    EmptySearchView()
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            EmptySearchView()
+                            if searchHistoryEnabled && !searchViewModel.searchHistory.isEmpty {
+                                SearchSuggestionsView(isPresented: $isSuggestionsPresented)
+                            }
+                        }
+                    }
                 } else if searchViewModel.searchResults.isEmpty {
                     EmptySearchResultsView()
                 } else {
@@ -31,6 +40,13 @@ struct SearchView: View {
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 searchViewModel.favoritesViewModel = favoritesViewModel
+            }
+            .onChange(of: searchViewModel.searchText) { oldValue, newValue in
+                isSuggestionsPresented = newValue.isEmpty
+                // If user clears the search text, reset to base view
+                if newValue.isEmpty {
+                    searchViewModel.clearSearch()
+                }
             }
         }
     }
