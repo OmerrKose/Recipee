@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage("autoSuggestionsEnabled") private var autoSuggestionsEnabled = true
     
     @EnvironmentObject var searchViewModel: SearchViewModel
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     
     @State private var showingClearFavoritesAlert = false
     @State private var showingClearSearchHistoryAlert = false
@@ -103,7 +104,7 @@ struct SettingsView: View {
         .alert("Clear All Favorites", isPresented: $showingClearFavoritesAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Clear", role: .destructive) {
-                // Clear favorites logic
+                favoritesViewModel.clearAllFavorites()
             }
         } message: {
             Text("This will remove all your favorite meals and categories. This action cannot be undone.")
@@ -122,4 +123,5 @@ struct SettingsView: View {
 #Preview {
     SettingsView()
         .environmentObject(SearchViewModel())
+        .environmentObject(FavoritesViewModel())
 }

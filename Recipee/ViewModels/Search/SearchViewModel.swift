@@ -15,6 +15,7 @@ class SearchViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var hasSearched: Bool = false
     @Published var searchHistory: [String] = []
+    @Published var suggestions: [String] = []
     
     // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
@@ -187,6 +188,7 @@ class SearchViewModel: ObservableObject {
         searchResults = SearchResults()
         hasSearched = false
         isLoading = false
+        suggestions = []
     }
     
     // MARK: - Search History Methods
@@ -234,6 +236,48 @@ class SearchViewModel: ObservableObject {
         if let history = UserDefaults.standard.stringArray(forKey: searchHistoryKey) {
             searchHistory = history
         }
+    }
+    
+    // MARK: - Auto Suggestions Methods
+    func generateSuggestions(for query: String) {
+        guard !query.isEmpty else {
+            suggestions = []
+            return
+        }
+        
+        // Check if auto-suggestions are enabled
+        guard UserDefaults.standard.bool(forKey: "autoSuggestionsEnabled") else {
+            suggestions = []
+            return
+        }
+        
+        var suggestionSet = Set<String>()
+        let lowercaseQuery = query.lowercased()
+        
+        // Suggest from search history that matches the query
+        for historyItem in searchHistory {
+            if historyItem.lowercased().contains(lowercaseQuery) && historyItem.lowercased() != lowercaseQuery {
+                suggestionSet.insert(historyItem)
+            }
+        }
+        
+        // Suggest from favorite meal names
+        if let favorites = favoritesViewModel {
+            for meal in favorites.favoriteMeals {
+                if meal.name.lowercased().contains(lowercaseQuery) {
+                    suggestionSet.insert(meal.name)
+                }
+            }
+            
+            // Suggest from favorite category names
+            for category in favorites.favoriteCategories {
+                if category.name.lowercased().contains(lowercaseQuery) {
+                    suggestionSet.insert(category.name)
+                }
+            }
+        }
+        
+        suggestions = Array(suggestionSet.prefix(5)) // Limit to 5 suggestions
     }
 }
 

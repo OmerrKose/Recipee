@@ -35,6 +35,7 @@ struct MainTabView: View {
             Tab("Settings", systemImage: "gear") {
                 SettingsView()
                     .environmentObject(searchViewModel)
+                    .environmentObject(favoritesViewModel)
             }
             
             // Search

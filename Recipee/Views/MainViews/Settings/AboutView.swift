@@ -8,6 +8,19 @@
 import SwiftUI
 
 struct AboutView: View {
+    // MARK: - App Version & Info
+    var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    }
+    
+    var buildNumber: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+    }
+    
+    var miniOSVersion: String {
+        return "26.0"  // Change this to match your actual deployment target
+    }
+    
     var body: some View {
         ZStack {
             Color(.systemBackground)
@@ -24,7 +37,7 @@ struct AboutView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                     
-                    Text("Version 1.0.0")
+                    Text("Version \(appVersion) (\(buildNumber))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -34,14 +47,14 @@ struct AboutView: View {
             
             Section(header: Text("About")) {
                 Label("Built with SwiftUI", systemImage: "swift")
-                Label("iOS 16.0+", systemImage: "iphone")
+                Label("iOS \(miniOSVersion)+", systemImage: "iphone")
                 Label("Recipe Database by TheMealDB", systemImage: "server.rack")
             }
             .listRowBackground(Color(.systemGray6))
             
             Section(header: Text("Developer")) {
                 Label("Ömer Köse", systemImage: "person")
-                Label("omerkose@example.com", systemImage: "envelope")
+                Label("omerr.kose99@gmail.com", systemImage: "envelope")
             }
             .listRowBackground(Color(.systemGray6))
         }
