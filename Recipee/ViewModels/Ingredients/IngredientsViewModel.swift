@@ -1,19 +1,19 @@
 //
-//  CategoriesViewModel.swift
-//  RecipeApp
+//  IngredientsViewModel.swift
+//  Recipee
 //
-//  Created by Ömer Köse on 30.09.2025.
+//  Created by Ömer Köse on 28.10.2025.
 //
 
 import Foundation
 import Combine
 
-class MealCategoriesViewModel: ObservableObject {
+class IngredientsViewModel: ObservableObject {
     // Loading state for service
     enum LoadingState {
         case idle
         case loading
-        case loaded([Category])
+        case loaded([Ingredient])
         case error(String)
     }
     
@@ -24,7 +24,7 @@ class MealCategoriesViewModel: ObservableObject {
     }
     
     // MARK: - Variables
-    @Published var categories: [Category] = []
+    @Published var ingredients: [Ingredient] = []
     @Published var errorMessage: String?
     @Published var state: LoadingState = .idle
     @Published var sortOrder: SortOrder = .nameAscending
@@ -32,17 +32,31 @@ class MealCategoriesViewModel: ObservableObject {
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
     
-    var sortedCategories: [Category] {
-        guard case .loaded(let categories) = state else {
+    var sortedIngredients: [Ingredient] {
+        guard case .loaded(let ingredients) = state else {
             return []
         }
         
         switch sortOrder {
         case .nameAscending:
-            return categories.sorted { $0.name < $1.name}
+            return ingredients.sorted { $0.name < $1.name}
         case .nameDescending:
-            return categories.sorted { $0.name > $1.name}
+            return ingredients.sorted { $0.name > $1.name}
         }
+    }
+    
+    // Group ingredients by first letter
+    var groupedIngredients: [(String, [Ingredient])] {
+        let ingredients = sortedIngredients
+        let grouped = Dictionary(grouping: ingredients) { ingredient in
+            String(ingredient.name.prefix(1).uppercased())
+        }
+        return grouped.sorted { $0.key < $1.key }
+    }
+    
+    // Get available letters
+    var availableLetters: [String] {
+        groupedIngredients.map { $0.0 }
     }
     
     // MARK: - Initializer
@@ -51,7 +65,7 @@ class MealCategoriesViewModel: ObservableObject {
     }
     
     // MARK: - Service Calls
-    func fetchCategories() async {
+    func fetchIngredients() async {
         // Cancel any existing fetch task
         fetchTask?.cancel()
         
@@ -61,14 +75,14 @@ class MealCategoriesViewModel: ObservableObject {
             errorMessage = nil
             
             do {
-                let response: CategoriesResponse = try await self.networkService.fetch(CategoriesResponse.self, from: .categories)
+                let response: IngredientsResponse = try await self.networkService.fetch(IngredientsResponse.self, from: .ingredients)
                 
-                guard let categories = response.categories else {
-                    state = .error("No categories found.")
+                guard let ingredients = response.ingredients else {
+                    state = .error("No ingredients found.")
                     return
                 }
                 
-                state = .loaded(categories)
+                state = .loaded(ingredients)
             } catch {
                 // Handle cancellation specifically - don't update state if cancelled
                 if error is CancellationError {
@@ -80,7 +94,7 @@ class MealCategoriesViewModel: ObservableObject {
                     if let networkError = error as? NetworkError {
                         state = .error(networkError.errorDescription ?? "Network error occurred")
                     } else {
-                        state = .error("Failed to fetch categories: \(error.localizedDescription)")
+                        state = .error("Failed to fetch ingredients: \(error.localizedDescription)")
                     }
                 }
             }

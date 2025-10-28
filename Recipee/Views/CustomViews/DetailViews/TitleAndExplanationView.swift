@@ -14,16 +14,19 @@ import SwiftUI
 ///   - title: The main title text.
 ///   - explanation: The secondary explanation text.
 ///   - link: If provided turns title into link with given url.
+///   - iconColor: Optional color for the icon
+/// - Note: When link is provided, only the title becomes clickable
 ///
 /// Example usage:
 /// ```swift
-/// InfoRowView(imageName: "star.fill", title: "Rating", explantion: "4.5/5")
+/// TitleAndExplanationView(imageName: "star.fill", title: "Rating", explanation: "4.5/5")
 /// ```
 struct TitleAndExplanationView: View {
     var title: String
     var explanation: String?
     var imageName: String?
     var link: String?
+    var iconColor: Color?
     
     var body: some View {
         HStack(spacing: 8) {
@@ -32,7 +35,7 @@ struct TitleAndExplanationView: View {
             if let image = imageName {
                 Image(systemName: image)
                     .font(.title3)
-                    .fontWeight(.semibold)
+                    .foregroundStyle(iconColor ?? .secondary)
             }
             
             // Title
@@ -42,18 +45,21 @@ struct TitleAndExplanationView: View {
                 
             } else {
                 Text(title)
-                    .font(.callout)
-                    .fontWeight(.medium)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
                 
-                // Explanation
-                if let explanation = explanation {
+                // Explanation (on same line if provided)
+                if let explanation = explanation, !explanation.isEmpty {
                     Text(explanation)
-                        .font(.callout)
-                        .fontWeight(.light)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
                 }
             }
-        }
-    }
+            
+            Spacer()
+        } //: HStack
+    } //: Body
 }
 
 #Preview {

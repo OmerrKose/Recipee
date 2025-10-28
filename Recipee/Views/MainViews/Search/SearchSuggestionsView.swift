@@ -72,7 +72,7 @@ struct SearchSuggestionsView: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
-                        .background(Color(.systemGray6))
+                        .background(Color(.secondarySystemBackground))
                     }
                     .buttonStyle(.plain)
                     .clipShape(RoundedRectangle(cornerRadius: 10))

@@ -38,19 +38,19 @@ struct SearchView: View {
                                         Text(suggestion)
                                             .foregroundStyle(.primary)
                                         Spacer()
-                                    }
+                                    } //: HStack
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 12)
-                                    .background(Color(.systemGray6))
+                                    .background(Color(.secondarySystemBackground))
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                                }
+                                } //: Button
                                 .buttonStyle(.plain)
-                            }
-                        }
+                            } //: ForEach
+                        } //: VStack
                         .padding(.horizontal, 16)
                         .padding(.top, 8)
                         .padding(.bottom, 16)
-                    }
+                    } //: ScrollView
                     .frame(maxHeight: 200) // Limit height and allow scrolling
                     .fixedSize(horizontal: false, vertical: true)
                 }
@@ -66,21 +66,21 @@ struct SearchView: View {
                             if searchHistoryEnabled && !searchViewModel.searchHistory.isEmpty {
                                 SearchSuggestionsView(isPresented: $isSuggestionsPresented)
                             }
-                        }
-                    }
+                        } //: VStack
+                    } //: ScrollView
                 } else if searchViewModel.searchResults.isEmpty {
                     EmptySearchResultsView()
                 } else {
                     SearchResultsView(searchResults: searchViewModel.searchResults)
                         .padding(.top, searchViewModel.suggestions.isEmpty ? 0 : 8)
                 }
-            }
+            } //: VStack
             .background(Color(.systemBackground))
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 searchViewModel.favoritesViewModel = favoritesViewModel
-            }
+            } //: onAppear
             .onChange(of: searchViewModel.searchText) { oldValue, newValue in
                 isSuggestionsPresented = newValue.isEmpty
                 // If user clears the search text, reset to base view
@@ -90,9 +90,9 @@ struct SearchView: View {
                     // Generate suggestions as user types
                     searchViewModel.generateSuggestions(for: newValue)
                 }
-            }
-        }
-    }
+            } //: onChange
+        } //: NavigationStack
+    } //: Body
 }
 
 #Preview {

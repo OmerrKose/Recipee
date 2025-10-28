@@ -23,7 +23,7 @@ class OriginsViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: Variables
+    // MARK: - Variables
     @Published var origins: [Origin] = []
     @Published var errorMessage: String?
     @Published var state: LoadingState = .idle
@@ -31,10 +31,6 @@ class OriginsViewModel: ObservableObject {
     
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
-    
-    init(networkService: NetworkServiceProtocol = NetworkService()) {
-        self.networkService = networkService
-    }
     
     var sortedOrigins: [Origin] {
         guard case .loaded(let origins) = state else {
@@ -49,7 +45,13 @@ class OriginsViewModel: ObservableObject {
         }
     }
     
-    // MARK: Service Calls
+    
+    // MARK: - Initializer
+    init(networkService: NetworkServiceProtocol = NetworkService()) {
+        self.networkService = networkService
+    }
+    
+    // MARK: - Service Calls
     func fetchOrigins() async {
         // Cancel any existing fetch task
         fetchTask?.cancel()

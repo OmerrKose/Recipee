@@ -18,6 +18,7 @@ class FavoritesViewModel: ObservableObject {
     private let mealsKey = "favoriteMeals"
     private let categoriesKey = "favoriteCategories"
     
+    // MARK: - Initializer
     init() {
         loadFavorites()
     }

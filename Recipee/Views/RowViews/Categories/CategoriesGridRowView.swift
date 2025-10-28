@@ -19,7 +19,7 @@ struct CategoriesGridRowView: View {
                     switch phase {
                     case .empty:
                         ZStack {
-                            Color(.systemGray6)
+                            Color(.secondarySystemBackground)
                             ProgressView()
                         }
                     case .success(let image):
@@ -75,12 +75,12 @@ struct CategoriesGridRowView: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color(.systemGray6))
-                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 4)
+                .fill(Color(.secondarySystemBackground))
+                .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 20)
-                .stroke(Color(.systemGray4), lineWidth: 1)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
         )
     }
 }

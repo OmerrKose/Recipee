@@ -32,8 +32,8 @@ struct FavoritesView: View {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                     selectedTab = tab
                                 }
-                            }
-                        } //: Loop
+                            } //: TabBar
+                        } //: ForEach
                     } //: HStack
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
@@ -62,10 +62,10 @@ struct FavoritesView: View {
                                         MealDetailView(meal: meal)
                                     } label: {
                                         MealsDetailedListRowView(meal: meal)
-                                    }
+                                    } //: NavigationLink
                                     .buttonStyle(.plain)
-                                }
-                            }
+                                } //: ForEach
+                            } //: LazyVStack
                             .padding(.horizontal, 16)
                         }
                         
@@ -87,18 +87,18 @@ struct FavoritesView: View {
                                             .environmentObject(MealViewModel())
                                     } label: {
                                         CategoriesGridRowView(category: category)
-                                    }
-                                }
-                            }
+                                    } //: NavigationLink
+                                } //: ForEach
+                            } //: LazyVGrid
                             .padding(.horizontal, 16)
                         }
-                    }
-                }
+                    } //: switch
+                } //: VStack
                 .navigationTitle("Favorites")
                 .navigationBarTitleDisplayMode(.large)
-            }
-        }
-    }
+            } //: ScrollView
+        } //: NavigationStack
+    } //: Body
 }
 
 #Preview {

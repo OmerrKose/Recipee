@@ -90,12 +90,12 @@ struct MealsDetailedListRowView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemGray6))
-                .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 3)
+                .fill(Color(.secondarySystemBackground))
+                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.systemGray4), lineWidth: 1)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
         )
     }
 }

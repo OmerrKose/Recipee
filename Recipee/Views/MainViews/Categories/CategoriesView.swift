@@ -54,7 +54,7 @@ struct CategoriesView: View {
                     case .origins:
                         OriginsListView()
                     case .ingredients:
-                        EmptyView()
+                        AllIngredientsListView()
                     }
                     
                 } //: VStack
@@ -73,4 +73,5 @@ struct CategoriesView: View {
         .environmentObject(OriginsViewModel())
         .environmentObject(MealViewModel())
         .environmentObject(FavoritesViewModel())
+        .environmentObject(IngredientsViewModel())
 }

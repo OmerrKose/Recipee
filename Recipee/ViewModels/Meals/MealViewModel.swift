@@ -23,7 +23,7 @@ class MealViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: Variables
+    // MARK: - Variables
     @Published var origins: [Origin] = []
     @Published var errorMessage: String?
     @Published var state: LoadingState = .idle
@@ -49,7 +49,7 @@ class MealViewModel: ObservableObject {
         }
     }
     
-    // MARK: Service Calls
+    // MARK: - Service Calls
     /// Fetch meals by country / origin
     ///  - Parameters:
     ///    - country: The origin of the meals.

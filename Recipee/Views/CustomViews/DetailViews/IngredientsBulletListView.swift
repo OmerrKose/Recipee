@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct IngredientsListView: View {
+struct IngredientsBulletListView: View {
     let ingredients: [(ingredient: String, measure: String)]
     
     var body: some View {
@@ -42,5 +42,5 @@ struct IngredientsListView: View {
         ("Milk", "1/2 cup")
     ]
     
-    IngredientsListView(ingredients: ingredients)
+    IngredientsBulletListView(ingredients: ingredients)
 }

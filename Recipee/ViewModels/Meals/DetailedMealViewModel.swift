@@ -17,7 +17,7 @@ class DetailedMealViewModel: ObservableObject {
         case error(String)
     }
     
-    // MARK: Variables
+    // MARK: - Variables
     @Published var meals: [DetailedMeal] = []
     @Published var state: LoadingState = .idle
     @Published var errorMessage: String?
@@ -25,6 +25,7 @@ class DetailedMealViewModel: ObservableObject {
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
     
+    // MARK: - Initializer
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }

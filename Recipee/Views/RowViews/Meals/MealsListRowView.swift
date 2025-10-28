@@ -54,11 +54,12 @@ struct MealsListRowView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color(.systemGray4), lineWidth: 1)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
         )
     }
 }
