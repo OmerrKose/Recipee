@@ -30,7 +30,7 @@ struct CategoriesView: View {
                 .padding()
                 
                 // Content
-                ScrollView {
+                ZStack {
                     switch selectedTab {
                     case .categories:
                         MealCategoriesGridView()
@@ -40,6 +40,7 @@ struct CategoriesView: View {
                         AllIngredientsListView()
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             } //: VStack
             .background(Color(.systemBackground))
             .navigationTitle(selectedTab.rawValue)

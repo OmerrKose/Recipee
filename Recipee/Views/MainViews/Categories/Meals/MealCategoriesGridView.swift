@@ -22,20 +22,23 @@ struct MealCategoriesGridView: View {
                     .frame(minHeight: 400)
                 
             case .loaded:
-                LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: 16),
-                    GridItem(.flexible(), spacing: 16)
-                ], spacing: 20) {
-                    ForEach(viewModel.sortedCategories) { category in
-                        NavigationLink {
-                            MealCategoriesListView(mealCategory: category.name)
-                                .environmentObject(MealViewModel())
-                        } label: {
-                            CategoriesGridRowView(category: category)
-                        }
-                    } //: Loop
-                } //: LazyVGrid
-                .padding(.horizontal, 16)
+                ScrollView {
+                    LazyVGrid(columns: [
+                        GridItem(.flexible(), spacing: 16),
+                        GridItem(.flexible(), spacing: 16)
+                    ], spacing: 20) {
+                        ForEach(viewModel.sortedCategories) { category in
+                            NavigationLink {
+                                MealCategoriesListView(mealCategory: category.name)
+                                    .environmentObject(MealViewModel())
+                            } label: {
+                                CategoriesGridRowView(category: category)
+                            }
+                        } //: Loop
+                    } //: LazyVGrid
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                } //: ScrollView
                 
             case .error(let message):
                 ServiceErrorView(message: message) {

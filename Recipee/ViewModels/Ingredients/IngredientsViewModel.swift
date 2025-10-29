@@ -51,7 +51,25 @@ class IngredientsViewModel: ObservableObject {
         let grouped = Dictionary(grouping: ingredients) { ingredient in
             String(ingredient.name.prefix(1).uppercased())
         }
-        return grouped.sorted { $0.key < $1.key }
+        // Sort letters based on sort order, and sort ingredients within each letter group
+        let mapped = grouped.map { (letter, items) -> (String, [Ingredient]) in
+            let sortedItems: [Ingredient]
+            switch sortOrder {
+            case .nameAscending:
+                sortedItems = items.sorted { $0.name < $1.name }
+            case .nameDescending:
+                sortedItems = items.sorted { $0.name > $1.name }
+            }
+            return (letter, sortedItems)
+        }
+        
+        // Sort letter groups based on sort order
+        switch sortOrder {
+        case .nameAscending:
+            return mapped.sorted(by: { $0.0 < $1.0 })
+        case .nameDescending:
+            return mapped.sorted(by: { $0.0 > $1.0 })
+        }
     }
     
     // Get available letters

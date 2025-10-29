@@ -10,8 +10,18 @@ import SwiftUI
 struct AllIngredientsListView: View {
     @EnvironmentObject var viewModel: IngredientsViewModel
     
-    // Alphabet for the side index
+    // Alphabet for the side index - static A-Z for visual reference
     private let alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W", "X","Y", "Z"]
+    
+    // Sorted alphabet based on current sort order
+    private var sortedAlphabet: [String] {
+        switch viewModel.sortOrder {
+        case .nameAscending:
+            return alphabet
+        case .nameDescending:
+            return alphabet.reversed()
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -43,12 +53,10 @@ struct AllIngredientsListView: View {
                                         .frame(height: 0)
                                         .id("top")
                                     
-                                    ForEach(alphabet, id: \.self) { letter in
-                                        let ingredientsForLetter = viewModel.groupedIngredients.first { $0.0 == letter }?.1 ?? []
-                                        
+                                    ForEach(viewModel.groupedIngredients, id: \.0) { letter, ingredientsForLetter in
                                         if !ingredientsForLetter.isEmpty {
-                                            Section(header: 
-                                                Text(letter)
+                                            // Letter header
+                                            Text(letter)
                                                 .font(.headline)
                                                 .fontWeight(.semibold)
                                                 .foregroundStyle(.secondary)
@@ -56,18 +64,18 @@ struct AllIngredientsListView: View {
                                                 .padding(.horizontal, 16)
                                                 .padding(.vertical, 8)
                                                 .background(Color(.systemBackground))
-                                            ) {
-                                                ForEach(ingredientsForLetter) { ingredient in
-                                                    NavigationLink {
-                                                        IngredientDetailView(ingredient: ingredient)
-                                                    } label: {
-                                                        IngredientRowView(ingredient: ingredient)
-                                                    } //: NavigationLink
-                                                    .buttonStyle(.plain)
-                                                    .padding(.bottom, 12)
-                                                } //: ForEach
-                                                .padding(.horizontal, 16)
-                                            } //: Section
+                                            
+                                            // Ingredients for this letter
+                                            ForEach(ingredientsForLetter) { ingredient in
+                                                NavigationLink {
+                                                    IngredientDetailView(ingredient: ingredient)
+                                                } label: {
+                                                    IngredientRowView(ingredient: ingredient)
+                                                } //: NavigationLink
+                                                .buttonStyle(.plain)
+                                                .padding(.bottom, 12)
+                                            } //: ForEach
+                                            .padding(.horizontal, 16)
                                             .id(letter)
                                         }
                                     } //: ForEach
@@ -100,8 +108,8 @@ struct AllIngredientsListView: View {
                                         Divider()
                                             .frame(width:2 ,height: 4)
                                         
-                                        ForEach(0..<alphabet.count, id: \.self) { index in
-                                            let letter = alphabet[index]
+                                        ForEach(0..<sortedAlphabet.count, id: \.self) { index in
+                                            let letter = sortedAlphabet[index]
                                             let isAvailable = viewModel.availableLetters.contains(letter)
                                             
                                             Button(action: {

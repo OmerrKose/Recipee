@@ -22,19 +22,22 @@ struct OriginsListView: View {
                     .frame(minHeight: 400)
                 
             case .loaded:
-                LazyVStack(alignment: .leading, spacing: 12) {
-                    ForEach(viewModel.sortedOrigins) { origin in
-                        NavigationLink {
-                            OriginMealsListView(originName: origin.name)
-                                .environmentObject(MealViewModel())
-                        } label: {
-                            OriginsListRowView(origin: origin)
-                                .padding(.horizontal, 8)
-                        }
-                        .buttonStyle(.plain)
-                        
-                    } //: Loop
-                } //: LazyVStack
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 12) {
+                        ForEach(viewModel.sortedOrigins) { origin in
+                            NavigationLink {
+                                OriginMealsListView(originName: origin.name)
+                                    .environmentObject(MealViewModel())
+                            } label: {
+                                OriginsListRowView(origin: origin)
+                                    .padding(.horizontal, 8)
+                            }
+                            .buttonStyle(.plain)
+                            
+                        } //: Loop
+                    } //: LazyVStack
+                    .padding(.vertical, 8)
+                } //: ScrollView
                 
             case .error(let message):
                 ServiceErrorView(message: message) {
