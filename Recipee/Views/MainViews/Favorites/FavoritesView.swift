@@ -10,7 +10,6 @@ import SwiftUI
 struct FavoritesView: View {
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     @State private var selectedTab: FavoriteTab = .meals
-    @Namespace private var animation
     
     enum FavoriteTab: String, CaseIterable {
         case meals = "Meals"
@@ -19,35 +18,20 @@ struct FavoritesView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Enhanced Tab bar with better styling
-                    HStack(spacing: 8) {
-                        ForEach(FavoriteTab.allCases, id: \.self) { tab in
-                            TabBar(
-                                title: tab.rawValue,
-                                isSelected: selectedTab == tab,
-                                namespace: animation
-                            ) {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                    selectedTab = tab
-                                }
-                            } //: TabBar
-                        } //: ForEach
-                    } //: HStack
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 16) // Add padding between tab bar and content
-                    
-                    // Content
-                    switch selectedTab {
+            VStack(spacing: 0) {
+                // Native Segmented Picker
+                Picker("Favorites", selection: $selectedTab) {
+                    ForEach(FavoriteTab.allCases, id: \.self) { tab in
+                        Text(tab.rawValue).tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding()
+                
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // Content
+                        switch selectedTab {
                     case .meals:
                         if favoritesViewModel.favoriteMeals.isEmpty {
                             EmptyFavoritesView(
@@ -92,11 +76,12 @@ struct FavoritesView: View {
                             } //: LazyVGrid
                             .padding(.horizontal, 16)
                         }
-                    } //: switch
-                } //: VStack
-                .navigationTitle("Favorites")
-                .navigationBarTitleDisplayMode(.large)
-            } //: ScrollView
+                        } //: switch
+                    } //: VStack
+                } //: ScrollView
+            } //: VStack
+            .navigationTitle("Favorites")
+            .navigationBarTitleDisplayMode(.large)
         } //: NavigationStack
     } //: Body
 }

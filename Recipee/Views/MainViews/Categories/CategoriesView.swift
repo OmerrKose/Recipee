@@ -16,38 +16,21 @@ enum CategoryTab: String, CaseIterable {
 /// Main view for categories, displays in 3, `Categories`, `Origins`, and `Ingredients`
 struct CategoriesView: View {
     @State private var selectedTab: CategoryTab = .categories
-    @Namespace private var animation
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Enhanced Tab bar with better styling
-                    HStack(spacing: 8) {
-                        ForEach(CategoryTab.allCases, id: \.self) { tab in
-                            TabBar(
-                                title: tab.rawValue,
-                                isSelected: selectedTab == tab,
-                                namespace: animation
-                            ) {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                    selectedTab = tab
-                                }
-                            }
-                        } //: Loop
-                    } //: HStack
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color(.systemBackground))
-                            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 16) // Add padding between tab bar and content
-                    
-                    // Content
+            VStack(spacing: 0) {
+                // Native Segmented Picker
+                Picker("Browse", selection: $selectedTab) {
+                    ForEach(CategoryTab.allCases, id: \.self) { tab in
+                        Text(tab.rawValue).tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding()
+                
+                // Content
+                ScrollView {
                     switch selectedTab {
                     case .categories:
                         MealCategoriesGridView()
@@ -56,9 +39,8 @@ struct CategoriesView: View {
                     case .ingredients:
                         AllIngredientsListView()
                     }
-                    
-                } //: VStack
-            } //: ScrollView
+                }
+            } //: VStack
             .background(Color(.systemBackground))
             .navigationTitle(selectedTab.rawValue)
             .navigationBarTitleDisplayMode(.large)

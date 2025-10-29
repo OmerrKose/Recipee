@@ -14,76 +14,75 @@ struct AllIngredientsListView: View {
     private let alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W", "X","Y", "Z"]
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color(.systemBackground)
-                    .ignoresSafeArea()
+        ZStack {
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
+            switch viewModel.state {
+            case .idle:
+                Color.clear
                 
-                switch viewModel.state {
-                case .idle:
-                    LoadingView("Loading origins...", fullScreen: false)
-                        .frame(minHeight: 400)
-                    
-                case .loading:
-                    LoadingView("Loading ingredients...")
-                    
-                case .loaded(let ingredients):
-                    if ingredients.isEmpty {
+            case .loading:
+                LoadingView("Loading origins...", fullScreen: false)
+                    .frame(minHeight: 400)
+                
+            case .loaded(let ingredients):
+                if ingredients.isEmpty {
                         ContentUnavailableView(
                             "No Ingredients",
                             systemImage: "fork.knife",
                             description: Text("There are no ingredients available at the moment.")
                         )
-                    } else {
-                        ScrollViewReader { proxy in
-                            ZStack {
-                                ScrollView {
-                                    LazyVStack(spacing: 0) {
-                                        // Top anchor
-                                        Color.clear
-                                            .frame(height: 0)
-                                            .id("top")
+                } else {
+                    ScrollViewReader { proxy in
+                        ZStack {
+                            ScrollView {
+                                LazyVStack(spacing: 0) {
+                                    // Top anchor
+                                    Color.clear
+                                        .frame(height: 0)
+                                        .id("top")
+                                    
+                                    ForEach(alphabet, id: \.self) { letter in
+                                        let ingredientsForLetter = viewModel.groupedIngredients.first { $0.0 == letter }?.1 ?? []
                                         
-                                        ForEach(alphabet, id: \.self) { letter in
-                                            let ingredientsForLetter = viewModel.groupedIngredients.first { $0.0 == letter }?.1 ?? []
-                                            
-                                            if !ingredientsForLetter.isEmpty {
-                                                Section(header: 
-                                                    Text(letter)
-                                                    .font(.headline)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundStyle(.secondary)
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                                    .padding(.horizontal, 16)
-                                                    .padding(.vertical, 8)
-                                                    .background(Color(.systemBackground))
-                                                ) {
-                                                    ForEach(ingredientsForLetter) { ingredient in
-                                                        NavigationLink {
-                                                            IngredientDetailView(ingredient: ingredient)
-                                                        } label: {
-                                                            IngredientRowView(ingredient: ingredient)
-                                                        } //: NavigationLink
-                                                        .buttonStyle(.plain)
-                                                        .padding(.bottom, 12)
-                                                    } //: ForEach
-                                                    .padding(.horizontal, 16)
-                                                } //: Section
-                                                .id(letter)
-                                            }
-                                        } //: ForEach
-                                        
-                                        // Bottom anchor
-                                        Color.clear
-                                            .frame(height: 0)
-                                            .id("bottom")
-                                    } //: LazyVStack
-                                    .padding(.vertical, 8)
-                                    .padding(.trailing, 16) // Add padding to prevent overlap with alphabet index
-                                } //: ScrollView
-                                
-                                // Side alphabet index
-                                HStack {
+                                        if !ingredientsForLetter.isEmpty {
+                                            Section(header: 
+                                                Text(letter)
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.secondary)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .padding(.horizontal, 16)
+                                                .padding(.vertical, 8)
+                                                .background(Color(.systemBackground))
+                                            ) {
+                                                ForEach(ingredientsForLetter) { ingredient in
+                                                    NavigationLink {
+                                                        IngredientDetailView(ingredient: ingredient)
+                                                    } label: {
+                                                        IngredientRowView(ingredient: ingredient)
+                                                    } //: NavigationLink
+                                                    .buttonStyle(.plain)
+                                                    .padding(.bottom, 12)
+                                                } //: ForEach
+                                                .padding(.horizontal, 16)
+                                            } //: Section
+                                            .id(letter)
+                                        }
+                                    } //: ForEach
+                                    
+                                    // Bottom anchor
+                                    Color.clear
+                                        .frame(height: 0)
+                                        .id("bottom")
+                                } //: LazyVStack
+                                .padding(.vertical, 8)
+                                .padding(.trailing, 16) // Add padding to prevent overlap with alphabet index
+                            } //: ScrollView
+                            
+                            // Side alphabet index
+                            HStack {
                                     Spacer()
                                     VStack(spacing: 2) {
                                         // Top button
@@ -139,16 +138,16 @@ struct AllIngredientsListView: View {
                         } //: ScrollViewReader
                     }
                     
-                case .error(let message):
+            case .error(let message):
                     ServiceErrorView(message: message) {
                         await viewModel.fetchIngredients()
                     } //: ServiceErrorView
-                } //: switch
-            } //: ZStack
-            .navigationTitle("Ingredients")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            } //: switch
+        } //: ZStack
+        .navigationTitle("Ingredients")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button(action: {
                             viewModel.sortOrder = .nameAscending
@@ -164,16 +163,21 @@ struct AllIngredientsListView: View {
                     } label: {
                         Label("Sort", systemImage: "arrow.up.arrow.down")
                     } //: Menu
-                } //: ToolbarItem
-            } //: Toolbar
-            .task {
-                if case .idle = viewModel.state { await viewModel.fetchIngredients() }
+            } //: ToolbarItem
+        } //: Toolbar
+        .task {
+            if case .idle = viewModel.state {
+                Task.detached(priority: .userInitiated) {
+                    await viewModel.fetchIngredients()
+                }
             }
-        } //: NavigationStack
+        }
     } //: Body
 }
 
 #Preview {
-    AllIngredientsListView()
-        .environmentObject(IngredientsViewModel())
+    NavigationStack {
+        AllIngredientsListView()
+            .environmentObject(IngredientsViewModel())
+    }
 }
