@@ -23,15 +23,22 @@ class MealCategoriesViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: - Variables
+    // MARK: - Published Properties
+    /// The list of all categories fetched from the API
     @Published var categories: [Category] = []
+    /// Error message displayed when fetching fails
     @Published var errorMessage: String?
+    /// Current loading state of the view model
     @Published var state: LoadingState = .idle
+    /// Current sort order for the categories list
     @Published var sortOrder: SortOrder = .nameAscending
     
+    // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
     
+    // MARK: - Computed Properties
+    /// Returns categories sorted according to the current sort order
     var sortedCategories: [Category] {
         guard case .loaded(let categories) = state else {
             return []
@@ -46,11 +53,15 @@ class MealCategoriesViewModel: ObservableObject {
     }
     
     // MARK: - Initializer
+    /// Initializes the view model with a network service
+    /// - Parameter networkService: The network service used to fetch data
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
     
     // MARK: - Service Calls
+    /// Fetches all meal categories from the API
+    /// - Note: This method implements task deduplication to prevent multiple simultaneous requests
     func fetchCategories() async {
         // Cancel any existing fetch task
         fetchTask?.cancel()

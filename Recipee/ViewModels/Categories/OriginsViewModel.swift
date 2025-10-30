@@ -23,15 +23,22 @@ class OriginsViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: - Variables
+    // MARK: - Published Properties
+    /// The list of all origins fetched from the API
     @Published var origins: [Origin] = []
+    /// Error message displayed when fetching fails
     @Published var errorMessage: String?
+    /// Current loading state of the view model
     @Published var state: LoadingState = .idle
+    /// Current sort order for the origins list
     @Published var sortOrder: SortOrder = .nameAscending
     
+    // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
     
+    // MARK: - Computed Properties
+    /// Returns origins sorted according to the current sort order
     var sortedOrigins: [Origin] {
         guard case .loaded(let origins) = state else {
             return []
@@ -47,11 +54,15 @@ class OriginsViewModel: ObservableObject {
     
     
     // MARK: - Initializer
+    /// Initializes the view model with a network service
+    /// - Parameter networkService: The network service used to fetch data
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
     
     // MARK: - Service Calls
+    /// Fetches all origins from the API
+    /// - Note: This method implements task deduplication to prevent multiple simultaneous requests
     func fetchOrigins() async {
         // Cancel any existing fetch task
         fetchTask?.cancel()

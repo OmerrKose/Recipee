@@ -65,12 +65,17 @@ class SearchViewModel: ObservableObject {
     }
     
     // MARK: - Search Methods
+    /// Commits the current search and saves it to history
     func commitSearch() {
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         shouldSaveToHistory = true
         performSearch(searchText, saveToHistory: true)
     }
     
+    /// Performs a search with optional history saving
+    /// - Parameters:
+    ///   - query: The search query to execute
+    ///   - saveToHistory: Whether to save this search to history
     private func performSearch(_ query: String, saveToHistory: Bool = false) {
         guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             searchResults = SearchResults()
@@ -90,6 +95,8 @@ class SearchViewModel: ObservableObject {
         }
     }
     
+    /// Searches across all enabled filter categories (categories, origins, meals, ingredients, favorites)
+    /// - Parameter query: The search query to execute
     @MainActor
     private func searchAll(_ query: String) async {
         var results = SearchResults()
@@ -219,6 +226,7 @@ class SearchViewModel: ObservableObject {
         }
     }
     
+    /// Clears the current search and resets all search state
     func clearSearch() {
         // Cancel any ongoing search
         searchTask?.cancel()
@@ -232,6 +240,8 @@ class SearchViewModel: ObservableObject {
     }
     
     // MARK: - Search History Methods
+    /// Adds a query to search history if enabled
+    /// - Parameter query: The search query to add to history
     private func addToSearchHistory(_ query: String) {
         // Check if search history is enabled
         guard UserDefaults.standard.bool(forKey: "searchHistoryEnabled") else { return }
@@ -253,25 +263,32 @@ class SearchViewModel: ObservableObject {
         saveSearchHistory()
     }
     
+    /// Selects a query from search history and fills the search text
+    /// - Parameter query: The query to select from history
     func selectFromHistory(_ query: String) {
         searchText = query
         shouldSaveToHistory = false  // Don't save when re-selecting from history
     }
     
+    /// Removes a specific query from search history
+    /// - Parameter query: The query to remove from history
     func removeFromHistory(_ query: String) {
         searchHistory.removeAll { $0 == query }
         saveSearchHistory()
     }
     
+    /// Clears all search history
     func clearSearchHistory() {
         searchHistory.removeAll()
         saveSearchHistory()
     }
     
+    /// Saves search history to UserDefaults
     private func saveSearchHistory() {
         UserDefaults.standard.set(searchHistory, forKey: searchHistoryKey)
     }
     
+    /// Loads search history from UserDefaults
     private func loadSearchHistory() {
         if let history = UserDefaults.standard.stringArray(forKey: searchHistoryKey) {
             searchHistory = history
@@ -279,6 +296,9 @@ class SearchViewModel: ObservableObject {
     }
     
     // MARK: - Auto Suggestions Methods
+    /// Generates search suggestions based on the query from history and favorites
+    /// - Parameter query: The search query to generate suggestions for
+    /// - Note: Only generates suggestions if auto-suggestions are enabled in UserDefaults
     func generateSuggestions(for query: String) {
         guard !query.isEmpty else {
             suggestions = []

@@ -96,7 +96,7 @@ struct SearchView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
             }
-            .onAppear { //: onAppear
+            .onAppear {
                 searchViewModel.favoritesViewModel = favoritesViewModel
             } //: onAppear
             .onChange(of: searchViewModel.searchText) { oldValue, newValue in

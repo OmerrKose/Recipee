@@ -23,15 +23,22 @@ class IngredientsViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: - Variables
+    // MARK: - Published Properties
+    /// The list of all ingredients fetched from the API
     @Published var ingredients: [Ingredient] = []
+    /// Error message displayed when fetching fails
     @Published var errorMessage: String?
+    /// Current loading state of the view model
     @Published var state: LoadingState = .idle
+    /// Current sort order for the ingredients list
     @Published var sortOrder: SortOrder = .nameAscending
     
+    // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
     private var fetchTask: Task<Void, Never>?
     
+    // MARK: - Computed Properties
+    /// Returns ingredients sorted according to the current sort order
     var sortedIngredients: [Ingredient] {
         guard case .loaded(let ingredients) = state else {
             return []
@@ -45,7 +52,7 @@ class IngredientsViewModel: ObservableObject {
         }
     }
     
-    // Group ingredients by first letter
+    /// Groups ingredients by their first letter and sorts them according to the current sort order
     var groupedIngredients: [(String, [Ingredient])] {
         let ingredients = sortedIngredients
         let grouped = Dictionary(grouping: ingredients) { ingredient in
@@ -72,17 +79,21 @@ class IngredientsViewModel: ObservableObject {
         }
     }
     
-    // Get available letters
+    /// Returns the list of available letters for alphabet navigation
     var availableLetters: [String] {
         groupedIngredients.map { $0.0 }
     }
     
     // MARK: - Initializer
+    /// Initializes the view model with a network service
+    /// - Parameter networkService: The network service used to fetch data
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
     
     // MARK: - Service Calls
+    /// Fetches all ingredients from the API
+    /// - Note: This method implements task deduplication to prevent multiple simultaneous requests
     func fetchIngredients() async {
         // Cancel any existing fetch task
         fetchTask?.cancel()
