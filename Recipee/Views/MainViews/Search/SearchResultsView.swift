@@ -120,6 +120,26 @@ struct SearchResultsView: View {
                         }
                     }
                 }
+                
+                // Ingredients
+                if !searchResults.ingredients.isEmpty {
+                    SearchSectionView(
+                        title: "Ingredients",
+                        icon: "leaf.fill",
+                        color: .green
+                    ) {
+                        LazyVStack(spacing: 12) {
+                            ForEach(searchResults.ingredients) { ingredient in
+                                NavigationLink {
+                                    IngredientDetailView(ingredient: ingredient)
+                                } label: {
+                                    IngredientRowView(ingredient: ingredient)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)

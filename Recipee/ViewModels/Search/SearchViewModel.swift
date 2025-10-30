@@ -17,6 +17,13 @@ class SearchViewModel: ObservableObject {
     @Published var searchHistory: [String] = []
     @Published var suggestions: [String] = []
     
+    // Search filters
+    @Published var filterFavorites: Bool = true
+    @Published var filterCategories: Bool = true
+    @Published var filterOrigins: Bool = true
+    @Published var filterMeals: Bool = true
+    @Published var filterIngredients: Bool = true
+    
     // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
     private var searchTask: Task<Void, Never>?
@@ -30,12 +37,23 @@ class SearchViewModel: ObservableObject {
     
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
+        
+        // Initialize UserDefaults keys if they don't exist (to match @AppStorage defaults)
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "searchHistoryEnabled") == nil {
+            defaults.set(true, forKey: "searchHistoryEnabled")
+        }
+        if defaults.object(forKey: "autoSuggestionsEnabled") == nil {
+            defaults.set(true, forKey: "autoSuggestionsEnabled")
+        }
+        
         loadSearchHistory()
         
         // Debounce search text changes for live search (without saving to history)
         $searchText
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
+            .dropFirst() // Skip the initial value to prevent unnecessary search on init
             .sink { [weak self] searchText in
                 guard let self = self else { return }
                 // Only search if text is not empty
@@ -76,23 +94,28 @@ class SearchViewModel: ObservableObject {
     private func searchAll(_ query: String) async {
         var results = SearchResults()
         
-        // Search categories
-        if let categories = await searchCategories(query) {
+        // Search categories (if filter enabled)
+        if filterCategories, let categories = await searchCategories(query) {
             results.categories = categories
         }
         
-        // Search origins
-        if let origins = await searchOrigins(query) {
+        // Search origins (if filter enabled)
+        if filterOrigins, let origins = await searchOrigins(query) {
             results.origins = origins
         }
         
-        // Search meals
-        if let meals = await searchMeals(query) {
+        // Search meals (if filter enabled)
+        if filterMeals, let meals = await searchMeals(query) {
             results.meals = meals
         }
         
-        // Search favorites
-        if let favorites = searchFavorites(query) {
+        // Search ingredients (if filter enabled)
+        if filterIngredients, let ingredients = await searchIngredients(query) {
+            results.ingredients = ingredients
+        }
+        
+        // Search favorites (if filter enabled)
+        if filterFavorites, let favorites = searchFavorites(query) {
             results.favoriteMeals = favorites.meals
             results.favoriteCategories = favorites.categories
         }
@@ -177,6 +200,24 @@ class SearchViewModel: ObservableObject {
         }
         
         return (favoriteMeals, favoriteCategories)
+    }
+    
+    private func searchIngredients(_ query: String) async -> [Ingredient]? {
+        do {
+            let response: IngredientsResponse = try await networkService.fetch(
+                IngredientsResponse.self,
+                from: .ingredients
+            )
+            
+            guard let ingredients = response.ingredients else { return nil }
+            
+            return ingredients.filter { ingredient in
+                ingredient.name.localizedCaseInsensitiveContains(query) ||
+                ingredient.description?.localizedCaseInsensitiveContains(query) == true
+            }
+        } catch {
+            return nil
+        }
     }
     
     func clearSearch() {
@@ -288,14 +329,15 @@ struct SearchResults {
     var meals: [DetailedMeal] = []
     var favoriteMeals: [DetailedMeal] = []
     var favoriteCategories: [Category] = []
+    var ingredients: [Ingredient] = []
     
     var isEmpty: Bool {
         categories.isEmpty && origins.isEmpty && meals.isEmpty && 
-        favoriteMeals.isEmpty && favoriteCategories.isEmpty
+        favoriteMeals.isEmpty && favoriteCategories.isEmpty && ingredients.isEmpty
     }
     
     var totalCount: Int {
         categories.count + origins.count + meals.count + 
-        favoriteMeals.count + favoriteCategories.count
+        favoriteMeals.count + favoriteCategories.count + ingredients.count
     }
 }

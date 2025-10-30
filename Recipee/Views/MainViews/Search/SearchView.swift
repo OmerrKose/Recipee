@@ -12,6 +12,7 @@ struct SearchView: View {
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     @AppStorage("searchHistoryEnabled") private var searchHistoryEnabled = true
     @State private var isSuggestionsPresented = true
+    @State private var showingFilters = false
     
     var body: some View {
         NavigationStack {
@@ -78,7 +79,24 @@ struct SearchView: View {
             .background(Color(.systemBackground))
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.large)
-            .onAppear {
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingFilters = true
+                    } label: {
+                        Label("Filters", systemImage: "line.3.horizontal.decrease.circle")
+                    }
+                }
+            }
+            .sheet(isPresented: $showingFilters) {
+                NavigationStack {
+                    SearchFiltersView()
+                        .environmentObject(searchViewModel)
+                }
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            }
+            .onAppear { //: onAppear
                 searchViewModel.favoritesViewModel = favoritesViewModel
             } //: onAppear
             .onChange(of: searchViewModel.searchText) { oldValue, newValue in
@@ -89,6 +107,12 @@ struct SearchView: View {
                 } else {
                     // Generate suggestions as user types
                     searchViewModel.generateSuggestions(for: newValue)
+                }
+            } //: onChange
+            .onChange(of: showingFilters) { _, isShowing in
+                // Re-search when filter sheet is dismissed
+                if !isShowing && searchViewModel.hasSearched {
+                    searchViewModel.commitSearch()
                 }
             } //: onChange
         } //: NavigationStack
