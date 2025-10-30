@@ -140,8 +140,7 @@ class SearchViewModel: ObservableObject {
             guard let categories = response.categories else { return nil }
             
             return categories.filter { category in
-                category.name.localizedCaseInsensitiveContains(query) ||
-                category.description.localizedCaseInsensitiveContains(query)
+                category.name.localizedCaseInsensitiveContains(query)
             }
         } catch {
             return nil
@@ -339,5 +338,22 @@ struct SearchResults {
     var totalCount: Int {
         categories.count + origins.count + meals.count + 
         favoriteMeals.count + favoriteCategories.count + ingredients.count
+    }
+    
+    var firstSection: String {
+        if !meals.isEmpty {
+            return "meals"
+        } else if !favoriteMeals.isEmpty {
+            return "favoriteMeals"
+        } else if !favoriteCategories.isEmpty {
+            return "favoriteCategories"
+        } else if !categories.isEmpty {
+            return "categories"
+        } else if !origins.isEmpty {
+            return "origins"
+        } else if !ingredients.isEmpty {
+            return "ingredients"
+        }
+        return ""
     }
 }

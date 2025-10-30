@@ -13,12 +13,36 @@ struct SearchResultsView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
+                // Meals
+                if !searchResults.meals.isEmpty {
+                    SearchSectionView(
+                        title: "Meals",
+                        icon: "fork.knife",
+                        color: .orange,
+                        itemCount: searchResults.meals.count,
+                        initiallyExpanded: searchResults.firstSection == "meals"
+                    ) {
+                        LazyVStack(spacing: 12) {
+                            ForEach(searchResults.meals) { meal in
+                                NavigationLink {
+                                    MealDetailView(meal: meal)
+                                } label: {
+                                    MealsDetailedListRowView(meal: meal)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+                
                 // Favorite Meals
                 if !searchResults.favoriteMeals.isEmpty {
                     SearchSectionView(
                         title: "Favorite Meals",
                         icon: "heart.fill",
-                        color: .red
+                        color: .red,
+                        itemCount: searchResults.favoriteMeals.count,
+                        initiallyExpanded: searchResults.firstSection == "favoriteMeals"
                     ) {
                         LazyVStack(spacing: 12) {
                             ForEach(searchResults.favoriteMeals) { meal in
@@ -38,7 +62,9 @@ struct SearchResultsView: View {
                     SearchSectionView(
                         title: "Favorite Categories",
                         icon: "heart.fill",
-                        color: .red
+                        color: .red,
+                        itemCount: searchResults.favoriteCategories.count,
+                        initiallyExpanded: searchResults.firstSection == "favoriteCategories"
                     ) {
                         LazyVGrid(columns: [
                             GridItem(.flexible(), spacing: 16),
@@ -61,7 +87,9 @@ struct SearchResultsView: View {
                     SearchSectionView(
                         title: "Categories",
                         icon: "square.grid.2x2",
-                        color: .blue
+                        color: .blue,
+                        itemCount: searchResults.categories.count,
+                        initiallyExpanded: searchResults.firstSection == "categories"
                     ) {
                         LazyVGrid(columns: [
                             GridItem(.flexible(), spacing: 16),
@@ -84,7 +112,9 @@ struct SearchResultsView: View {
                     SearchSectionView(
                         title: "Origins",
                         icon: "flag",
-                        color: .green
+                        color: .green,
+                        itemCount: searchResults.origins.count,
+                        initiallyExpanded: searchResults.firstSection == "origins"
                     ) {
                         LazyVStack(spacing: 12) {
                             ForEach(searchResults.origins) { origin in
@@ -101,32 +131,14 @@ struct SearchResultsView: View {
                     }
                 }
                 
-                // Meals
-                if !searchResults.meals.isEmpty {
-                    SearchSectionView(
-                        title: "Meals",
-                        icon: "fork.knife",
-                        color: .orange
-                    ) {
-                        LazyVStack(spacing: 12) {
-                            ForEach(searchResults.meals) { meal in
-                                NavigationLink {
-                                    MealDetailView(meal: meal)
-                                } label: {
-                                    MealsDetailedListRowView(meal: meal)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                }
-                
                 // Ingredients
                 if !searchResults.ingredients.isEmpty {
                     SearchSectionView(
                         title: "Ingredients",
                         icon: "leaf.fill",
-                        color: .green
+                        color: .green,
+                        itemCount: searchResults.ingredients.count,
+                        initiallyExpanded: searchResults.firstSection == "ingredients"
                     ) {
                         LazyVStack(spacing: 12) {
                             ForEach(searchResults.ingredients) { ingredient in
