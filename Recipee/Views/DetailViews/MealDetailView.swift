@@ -23,7 +23,7 @@ struct MealDetailView: View {
                         Color(.secondarySystemBackground)
                         ProgressView()
                     }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .success(let image):
                     image
                         .resizable()
@@ -36,7 +36,7 @@ struct MealDetailView: View {
                             .font(.largeTitle)
                             .foregroundStyle(.secondary)
                     }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 @unknown default:
                     EmptyView()
                 }
@@ -53,7 +53,7 @@ struct MealDetailView: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.leading)
                     .padding(.bottom, 4)
-
+                
                 // Meal metadata
                 VStack(alignment: .leading, spacing: 12) {
                     // Origin

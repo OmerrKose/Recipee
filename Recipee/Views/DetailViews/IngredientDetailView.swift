@@ -21,7 +21,7 @@ struct IngredientDetailView: View {
                         Color(.secondarySystemBackground)
                         ProgressView()
                     }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .success(let image):
                     image
                         .resizable()
@@ -34,7 +34,7 @@ struct IngredientDetailView: View {
                             .font(.largeTitle)
                             .foregroundStyle(.secondary)
                     }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 @unknown default:
                     EmptyView()
                 }

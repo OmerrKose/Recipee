@@ -32,50 +32,50 @@ struct FavoritesView: View {
                     VStack(spacing: 0) {
                         // Content
                         switch selectedTab {
-                    case .meals:
-                        if favoritesViewModel.favoriteMeals.isEmpty {
-                            EmptyFavoritesView(
-                                title: "No Favorite Meals",
-                                message: "Meals you favorite will appear here",
-                                systemImage: "heart"
-                            )
-                        } else {
-                            LazyVStack(spacing: 12) {
-                                ForEach(favoritesViewModel.favoriteMeals) { meal in
-                                    NavigationLink {
-                                        MealDetailView(meal: meal)
-                                    } label: {
-                                        MealsDetailedListRowView(meal: meal)
-                                    } //: NavigationLink
-                                    .buttonStyle(.plain)
-                                } //: ForEach
-                            } //: LazyVStack
-                            .padding(.horizontal, 16)
-                        }
-                        
-                    case .categories:
-                        if favoritesViewModel.favoriteCategories.isEmpty {
-                            EmptyFavoritesView(
-                                title: "No Favorite Categories",
-                                message: "Categories you favorite will appear here",
-                                systemImage: "heart"
-                            )
-                        } else {
-                            LazyVGrid(columns: [
-                                GridItem(.flexible(), spacing: 16),
-                                GridItem(.flexible(), spacing: 16)
-                            ], spacing: 20) {
-                                ForEach(favoritesViewModel.favoriteCategories) { category in
-                                    NavigationLink {
-                                        MealCategoriesListView(mealCategory: category.name)
-                                            .environmentObject(MealViewModel())
-                                    } label: {
-                                        CategoriesGridRowView(category: category)
-                                    } //: NavigationLink
-                                } //: ForEach
-                            } //: LazyVGrid
-                            .padding(.horizontal, 16)
-                        }
+                        case .meals:
+                            if favoritesViewModel.favoriteMeals.isEmpty {
+                                EmptyFavoritesView(
+                                    title: "No Favorite Meals",
+                                    message: "Meals you favorite will appear here",
+                                    systemImage: "heart"
+                                )
+                            } else {
+                                LazyVStack(spacing: 12) {
+                                    ForEach(favoritesViewModel.favoriteMeals) { meal in
+                                        NavigationLink {
+                                            MealDetailView(meal: meal)
+                                        } label: {
+                                            MealsDetailedListRowView(meal: meal)
+                                        } //: NavigationLink
+                                        .buttonStyle(.plain)
+                                    } //: ForEach
+                                } //: LazyVStack
+                                .padding(.horizontal, 16)
+                            }
+                            
+                        case .categories:
+                            if favoritesViewModel.favoriteCategories.isEmpty {
+                                EmptyFavoritesView(
+                                    title: "No Favorite Categories",
+                                    message: "Categories you favorite will appear here",
+                                    systemImage: "heart"
+                                )
+                            } else {
+                                LazyVGrid(columns: [
+                                    GridItem(.flexible(), spacing: 16),
+                                    GridItem(.flexible(), spacing: 16)
+                                ], spacing: 20) {
+                                    ForEach(favoritesViewModel.favoriteCategories) { category in
+                                        NavigationLink {
+                                            MealCategoriesListView(mealCategory: category.name)
+                                                .environmentObject(MealViewModel())
+                                        } label: {
+                                            CategoriesGridRowView(category: category)
+                                        } //: NavigationLink
+                                    } //: ForEach
+                                } //: LazyVGrid
+                                .padding(.horizontal, 16)
+                            }
                         } //: switch
                     } //: VStack
                 } //: ScrollView

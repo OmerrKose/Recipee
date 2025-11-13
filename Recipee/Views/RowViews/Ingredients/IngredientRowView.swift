@@ -18,7 +18,7 @@ struct IngredientRowView: View {
                 case .empty:
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.secondarySystemBackground))
+                            .fill(Color(.secondarySystemBackground))
                         ProgressView()
                     }
                 case .success(let image):
@@ -28,10 +28,10 @@ struct IngredientRowView: View {
                 case .failure:
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.systemGray5))
+                            .fill(Color(.systemGray5))
                         Image(systemName: "fork.knife")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
                     }
                 @unknown default:
                     EmptyView()
@@ -43,35 +43,35 @@ struct IngredientRowView: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(ingredient.name)
-                .font(.headline)
-                .foregroundStyle(.primary)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
                 
                 if let description = ingredient.description, !description.isEmpty {
                     Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
                 
                 if let type = ingredient.type, !type.isEmpty {
                     Text(type)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    .background(
-                        Capsule()
-                        .fill(Color.colorForTag(type))
-                    )
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(
+                            Capsule()
+                                .fill(Color.colorForTag(type))
+                        )
                 }
             }
             
             Spacer()
             
             Image(systemName: "chevron.right")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.tertiary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
         }
         .padding(12)
         .background(Color(.secondarySystemBackground))
@@ -79,7 +79,7 @@ struct IngredientRowView: View {
         .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-            .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
         )
     }
 }

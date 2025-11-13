@@ -25,78 +25,78 @@ struct SettingsView: View {
                     .ignoresSafeArea()
                 
                 Form {
-                // MARK: - Appearance
-                Section(header: Text("Appearance")) {
-                    Toggle(isOn: $isDarkMode) {
-                        Label("Dark Mode", systemImage: isDarkMode ? "moon.fill" : "sun.max.fill")
-                    }
-                } //: Section
-                .listRowBackground(Color(.systemGray6))
-                
-                // MARK: - Search & Discovery
-                Section(header: Text("Search & Discovery")) {
-                    Toggle(isOn: $searchHistoryEnabled) {
-                        Label("Search History", systemImage: "clock")
-                    }
-                    .onChange(of: searchHistoryEnabled) { oldValue, newValue in
-                        // Clear history when disabled
-                        if !newValue {
-                            searchViewModel.clearSearchHistory()
+                    // MARK: - Appearance
+                    Section(header: Text("Appearance")) {
+                        Toggle(isOn: $isDarkMode) {
+                            Label("Dark Mode", systemImage: isDarkMode ? "moon.fill" : "sun.max.fill")
                         }
-                    }
+                    } //: Section
+                    .listRowBackground(Color(.systemGray6))
                     
-                    Toggle(isOn: $autoSuggestionsEnabled) {
-                        Label("Auto-suggestions", systemImage: "text.bubble")
-                    }
+                    // MARK: - Search & Discovery
+                    Section(header: Text("Search & Discovery")) {
+                        Toggle(isOn: $searchHistoryEnabled) {
+                            Label("Search History", systemImage: "clock")
+                        }
+                        .onChange(of: searchHistoryEnabled) { oldValue, newValue in
+                            // Clear history when disabled
+                            if !newValue {
+                                searchViewModel.clearSearchHistory()
+                            }
+                        }
+                        
+                        Toggle(isOn: $autoSuggestionsEnabled) {
+                            Label("Auto-suggestions", systemImage: "text.bubble")
+                        }
+                        
+                        Button(action: {
+                            showingClearSearchHistoryAlert = true
+                        }) {
+                            Label("Clear Search History", systemImage: "trash")
+                                .foregroundStyle(.red)
+                        }
+                        .disabled(!searchHistoryEnabled)
+                    } //: Section
+                    .listRowBackground(Color(.systemGray6))
                     
-                    Button(action: {
-                        showingClearSearchHistoryAlert = true
-                    }) {
-                        Label("Clear Search History", systemImage: "trash")
-                            .foregroundStyle(.red)
-                    }
-                    .disabled(!searchHistoryEnabled)
-                } //: Section
-                .listRowBackground(Color(.systemGray6))
-                
-                // MARK: - Data Management
-                Section(header: Text("Data Management")) {
-                    Button(action: {
-                        showingClearFavoritesAlert = true
-                    }) {
-                        Label("Clear All Favorites", systemImage: "heart.slash")
-                            .foregroundStyle(.red)
-                    }
-                } //: Section
-                .listRowBackground(Color(.systemGray6))
-                
-                // MARK: - About
-                Section(header: Text("About")) {
-                    NavigationLink {
-                        AboutView()
-                    } label: {
-                        Label("About RecipeApp", systemImage: "info.circle")
-                    }
-                } //: Section
-                .listRowBackground(Color(.systemGray6))
-                
-                // MARK: - Legal
-                Section(header: Text("Legal")) {
-                    NavigationLink {
-                        PrivacyPolicyView()
-                    } label: {
-                        Label("Privacy Policy", systemImage: "hand.raised")
-                    }
+                    // MARK: - Data Management
+                    Section(header: Text("Data Management")) {
+                        Button(action: {
+                            showingClearFavoritesAlert = true
+                        }) {
+                            Label("Clear All Favorites", systemImage: "heart.slash")
+                                .foregroundStyle(.red)
+                        }
+                    } //: Section
+                    .listRowBackground(Color(.systemGray6))
                     
-                    NavigationLink {
-                        TermsOfServiceView()
-                    } label: {
-                        Label("Terms of Service", systemImage: "doc.text")
-                    }
-                }//: Section
-                .listRowBackground(Color(.systemGray6))
-            } //: Form
-            .scrollContentBackground(.hidden)
+                    // MARK: - About
+                    Section(header: Text("About")) {
+                        NavigationLink {
+                            AboutView()
+                        } label: {
+                            Label("About RecipeApp", systemImage: "info.circle")
+                        }
+                    } //: Section
+                    .listRowBackground(Color(.systemGray6))
+                    
+                    // MARK: - Legal
+                    Section(header: Text("Legal")) {
+                        NavigationLink {
+                            PrivacyPolicyView()
+                        } label: {
+                            Label("Privacy Policy", systemImage: "hand.raised")
+                        }
+                        
+                        NavigationLink {
+                            TermsOfServiceView()
+                        } label: {
+                            Label("Terms of Service", systemImage: "doc.text")
+                        }
+                    }//: Section
+                    .listRowBackground(Color(.systemGray6))
+                } //: Form
+                .scrollContentBackground(.hidden)
             } //: ZStack
             .navigationTitle("Settings")
             

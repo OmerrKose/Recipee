@@ -32,15 +32,15 @@ struct SearchSectionView<Content: View>: View {
                     isExpanded.toggle()
                 }
             } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: icon)
-                        .foregroundStyle(color)
-                        .font(.title3)
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+                    .font(.title3)
                         .frame(width: 24)
-                    
-                    Text(title)
-                        .font(.headline)
-                        .fontWeight(.semibold)
+                
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
                         .foregroundStyle(.primary)
                     
                     if let count = itemCount {
@@ -48,13 +48,13 @@ struct SearchSectionView<Content: View>: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
-                    
-                    Spacer()
+                
+                Spacer()
                     
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                }
+            }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 12)
                 .contentShape(Rectangle())
@@ -62,7 +62,7 @@ struct SearchSectionView<Content: View>: View {
             .buttonStyle(.plain)
             
             if isExpanded {
-                content
+            content
             }
         }
     }

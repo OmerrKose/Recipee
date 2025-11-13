@@ -14,33 +14,33 @@ struct TermsOfServiceView: View {
                 .ignoresSafeArea()
             
             ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Terms of Service")
-                    .font(.title)
-                    .fontWeight(.bold)
-                
-                Text("Last updated: October 2025")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                
-                Text("By using RecipeApp, you agree to these terms of service.")
-                    .font(.body)
-                
-                Text("Use License")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                
-                Text("This app is provided for personal, non-commercial use. You may not redistribute or modify the app without permission.")
-                    .font(.body)
-                
-                Text("Disclaimer")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                
-                Text("The recipe information is provided by third-party sources. We are not responsible for the accuracy of recipe data.")
-                    .font(.body)
-            }
-            .padding()
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Terms of Service")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Text("Last updated: October 2025")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    Text("By using RecipeApp, you agree to these terms of service.")
+                        .font(.body)
+                    
+                    Text("Use License")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text("This app is provided for personal, non-commercial use. You may not redistribute or modify the app without permission.")
+                        .font(.body)
+                    
+                    Text("Disclaimer")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text("The recipe information is provided by third-party sources. We are not responsible for the accuracy of recipe data.")
+                        .font(.body)
+                }
+                .padding()
             } //: ScrollView
         } //: ZStack
         .navigationTitle("Terms of Service")

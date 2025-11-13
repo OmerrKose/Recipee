@@ -38,11 +38,11 @@ struct AllIngredientsListView: View {
                 
             case .loaded(let ingredients):
                 if ingredients.isEmpty {
-                        ContentUnavailableView(
-                            "No Ingredients",
-                            systemImage: "fork.knife",
-                            description: Text("There are no ingredients available at the moment.")
-                        )
+                    ContentUnavailableView(
+                        "No Ingredients",
+                        systemImage: "fork.knife",
+                        description: Text("There are no ingredients available at the moment.")
+                    )
                 } else {
                     ScrollViewReader { proxy in
                         ZStack {
@@ -91,86 +91,86 @@ struct AllIngredientsListView: View {
                             
                             // Side alphabet index
                             HStack {
-                                    Spacer()
-                                    VStack(spacing: 2) {
-                                        // Top button
+                                Spacer()
+                                VStack(spacing: 2) {
+                                    // Top button
+                                    Button(action: {
+                                        withAnimation {
+                                            proxy.scrollTo("top", anchor: .top)
+                                        }
+                                    }) {
+                                        Image(systemName: "chevron.up")
+                                            .font(.system(size: 10, weight: .bold))
+                                            .foregroundStyle(.primary)
+                                            .frame(width: 18, height: 14)
+                                    } //: Button
+                                    
+                                    Divider()
+                                        .frame(width:2 ,height: 4)
+                                    
+                                    ForEach(0..<sortedAlphabet.count, id: \.self) { index in
+                                        let letter = sortedAlphabet[index]
+                                        let isAvailable = viewModel.availableLetters.contains(letter)
+                                        
                                         Button(action: {
                                             withAnimation {
-                                                proxy.scrollTo("top", anchor: .top)
+                                                proxy.scrollTo(letter, anchor: .top)
                                             }
                                         }) {
-                                            Image(systemName: "chevron.up")
-                                                .font(.system(size: 10, weight: .bold))
-                                                .foregroundStyle(.primary)
+                                            Text(letter)
+                                                .font(.system(size: 11, weight: .medium))
+                                                .foregroundStyle(isAvailable ? .primary : .tertiary)
                                                 .frame(width: 18, height: 14)
                                         } //: Button
-                                        
-                                        Divider()
-                                            .frame(width:2 ,height: 4)
-                                        
-                                        ForEach(0..<sortedAlphabet.count, id: \.self) { index in
-                                            let letter = sortedAlphabet[index]
-                                            let isAvailable = viewModel.availableLetters.contains(letter)
-                                            
-                                            Button(action: {
-                                                withAnimation {
-                                                    proxy.scrollTo(letter, anchor: .top)
-                                                }
-                                            }) {
-                                                Text(letter)
-                                                    .font(.system(size: 11, weight: .medium))
-                                                    .foregroundStyle(isAvailable ? .primary : .tertiary)
-                                                    .frame(width: 18, height: 14)
-                                            } //: Button
-                                            .disabled(!isAvailable)
-                                        } //: ForEach
-                                        
-                                        Divider()
-                                            .frame(width:2 ,height: 4)
-                                        
-                                        // Bottom button
-                                        Button(action: {
-                                            withAnimation {
-                                                proxy.scrollTo("bottom", anchor: .bottom)
-                                            }
-                                        }) {
-                                            Image(systemName: "chevron.down")
-                                                .font(.system(size: 10, weight: .bold))
-                                                .foregroundStyle(.primary)
-                                                .frame(width: 18, height: 14)
-                                        } //: Button
-                                    } //: VStack
-                                    .padding(.trailing, 4)
-                                } //: HStack
-                            } //: ZStack
-                        } //: ScrollViewReader
-                    }
-                    
+                                        .disabled(!isAvailable)
+                                    } //: ForEach
+                                    
+                                    Divider()
+                                        .frame(width:2 ,height: 4)
+                                    
+                                    // Bottom button
+                                    Button(action: {
+                                        withAnimation {
+                                            proxy.scrollTo("bottom", anchor: .bottom)
+                                        }
+                                    }) {
+                                        Image(systemName: "chevron.down")
+                                            .font(.system(size: 10, weight: .bold))
+                                            .foregroundStyle(.primary)
+                                            .frame(width: 18, height: 14)
+                                    } //: Button
+                                } //: VStack
+                                .padding(.trailing, 4)
+                            } //: HStack
+                        } //: ZStack
+                    } //: ScrollViewReader
+                }
+                
             case .error(let message):
-                    ServiceErrorView(message: message) {
-                        await viewModel.fetchIngredients()
-                    } //: ServiceErrorView
+                ServiceErrorView(message: message) {
+                    await viewModel.fetchIngredients()
+                } //: ServiceErrorView
             } //: switch
         } //: ZStack
         .navigationTitle("Ingredients")
         .navigationBarTitleDisplayMode(.large)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: {
-                            viewModel.sortOrder = .nameAscending
-                        }) {
-                            Label("A-Z", systemImage: viewModel.sortOrder == .nameAscending ? "checkmark" : "")
-                        } //: Button
-                        
-                        Button(action: {
-                            viewModel.sortOrder = .nameDescending
-                        }) {
-                            Label("Z-A", systemImage: viewModel.sortOrder == .nameDescending ? "checkmark" : "")
-                        } //: Button
-                    } label: {
-                        Label("Sort", systemImage: "arrow.up.arrow.down")
-                    } //: Menu
+                Menu {
+                    Button(action: {
+                        viewModel.sortOrder = .nameAscending
+                    }) {
+                        Label("A-Z", systemImage: viewModel.sortOrder == .nameAscending ? "checkmark" : "")
+                    } //: Button
+                    
+                    Button(action: {
+                        viewModel.sortOrder = .nameDescending
+                    }) {
+                        Label("Z-A", systemImage: viewModel.sortOrder == .nameDescending ? "checkmark" : "")
+                    } //: Button
+                } label: {
+                    Label("Sort", systemImage: "arrow.up.arrow.down")
+                } //: Menu
             } //: ToolbarItem
         } //: Toolbar
         .task {
