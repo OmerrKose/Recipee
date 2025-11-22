@@ -16,6 +16,7 @@ class SearchViewModel: ObservableObject {
     @Published var hasSearched: Bool = false
     @Published var searchHistory: [String] = []
     @Published var suggestions: [String] = []
+    @Published var errorMessage: String?
     
     // Search filters
     @Published var filterFavorites: Bool = true
@@ -28,7 +29,7 @@ class SearchViewModel: ObservableObject {
     private let networkService: NetworkServiceProtocol
     private var searchTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
-    private let searchHistoryKey = "searchHistory"
+    private let searchHistoryKey = Constants.UserDefaults.searchHistory
     private let maxHistoryCount = 20
     private var shouldSaveToHistory: Bool = false
     
@@ -40,8 +41,8 @@ class SearchViewModel: ObservableObject {
         
         // Initialize UserDefaults keys if they don't exist (to match @AppStorage defaults)
         let defaults = UserDefaults.standard
-        if defaults.object(forKey: "searchHistoryEnabled") == nil {
-            defaults.set(true, forKey: "searchHistoryEnabled")
+        if defaults.object(forKey: Constants.UserDefaults.searchHistoryEnabled) == nil {
+            defaults.set(true, forKey: Constants.UserDefaults.searchHistoryEnabled)
         }
         if defaults.object(forKey: "autoSuggestionsEnabled") == nil {
             defaults.set(true, forKey: "autoSuggestionsEnabled")
@@ -85,6 +86,7 @@ class SearchViewModel: ObservableObject {
         
         hasSearched = true
         isLoading = true
+        errorMessage = nil
         shouldSaveToHistory = saveToHistory
         
         // Cancel any existing search
@@ -150,6 +152,7 @@ class SearchViewModel: ObservableObject {
                 category.name.localizedCaseInsensitiveContains(query)
             }
         } catch {
+            handleError(error)
             return nil
         }
     }
@@ -167,6 +170,7 @@ class SearchViewModel: ObservableObject {
                 origin.name.localizedCaseInsensitiveContains(query)
             }
         } catch {
+            handleError(error)
             return nil
         }
     }
@@ -187,6 +191,7 @@ class SearchViewModel: ObservableObject {
                 meal.tagsList.contains { $0.localizedCaseInsensitiveContains(query) }
             }
         } catch {
+            handleError(error)
             return nil
         }
     }
@@ -222,7 +227,16 @@ class SearchViewModel: ObservableObject {
                 ingredient.description?.localizedCaseInsensitiveContains(query) == true
             }
         } catch {
+            handleError(error)
             return nil
+        }
+    }
+    
+    private func handleError(_ error: Error) {
+        if let networkError = error as? NetworkError {
+            self.errorMessage = networkError.errorDescription
+        } else {
+            self.errorMessage = error.localizedDescription
         }
     }
     
@@ -244,7 +258,7 @@ class SearchViewModel: ObservableObject {
     /// - Parameter query: The search query to add to history
     private func addToSearchHistory(_ query: String) {
         // Check if search history is enabled
-        guard UserDefaults.standard.bool(forKey: "searchHistoryEnabled") else { return }
+        guard UserDefaults.standard.bool(forKey: Constants.UserDefaults.searchHistoryEnabled) else { return }
         
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedQuery.isEmpty else { return }

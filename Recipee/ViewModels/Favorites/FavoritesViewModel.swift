@@ -17,8 +17,8 @@ class FavoritesViewModel: ObservableObject {
     
     // MARK: - Private Properties
     private let userDefaults = UserDefaults.standard
-    private let mealsKey = "favoriteMeals"
-    private let categoriesKey = "favoriteCategories"
+    private let mealsKey = Constants.UserDefaults.favoriteMeals
+    private let categoriesKey = Constants.UserDefaults.favoriteCategories
     
     // MARK: - Initializer
     init() {

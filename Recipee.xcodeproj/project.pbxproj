@@ -6,20 +6,68 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		0F3EAFF52ED2000500A8CC86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0F3344A72E8C4E4A00EAD4C1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0F3344AE2E8C4E4A00EAD4C1;
+			remoteInfo = Recipee;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0F3344AF2E8C4E4A00EAD4C1 /* Recipee.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Recipee.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0F3EAFF12ED2000500A8CC86 /* RecipeeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecipeeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0F3EAFFB2ED200EF00A8CC86 /* Exceptions for "Recipee" folder in "Recipee" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests/Mocks/MockNetworkService.swift,
+				Tests/ViewModels/MealViewModelTests.swift,
+				Tests/ViewModels/SearchViewModelTests.swift,
+			);
+			target = 0F3344AE2E8C4E4A00EAD4C1 /* Recipee */;
+		};
+		0F3EAFFC2ED200EF00A8CC86 /* Exceptions for "Recipee" folder in "RecipeeTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests/Mocks/MockNetworkService.swift,
+				Tests/ViewModels/MealViewModelTests.swift,
+				Tests/ViewModels/SearchViewModelTests.swift,
+			);
+			target = 0F3EAFF02ED2000500A8CC86 /* RecipeeTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0F3344B12E8C4E4A00EAD4C1 /* Recipee */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0F3EAFFB2ED200EF00A8CC86 /* Exceptions for "Recipee" folder in "Recipee" target */,
+				0F3EAFFC2ED200EF00A8CC86 /* Exceptions for "Recipee" folder in "RecipeeTests" target */,
+			);
 			path = Recipee;
+			sourceTree = "<group>";
+		};
+		0F3EAFF22ED2000500A8CC86 /* RecipeeTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RecipeeTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		0F3344AC2E8C4E4A00EAD4C1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F3EAFEE2ED2000500A8CC86 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				0F3344B12E8C4E4A00EAD4C1 /* Recipee */,
+				0F3EAFF22ED2000500A8CC86 /* RecipeeTests */,
 				0F3344B02E8C4E4A00EAD4C1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				0F3344AF2E8C4E4A00EAD4C1 /* Recipee.app */,
+				0F3EAFF12ED2000500A8CC86 /* RecipeeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +120,29 @@
 			productReference = 0F3344AF2E8C4E4A00EAD4C1 /* Recipee.app */;
 			productType = "com.apple.product-type.application";
 		};
+		0F3EAFF02ED2000500A8CC86 /* RecipeeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0F3EAFF72ED2000500A8CC86 /* Build configuration list for PBXNativeTarget "RecipeeTests" */;
+			buildPhases = (
+				0F3EAFED2ED2000500A8CC86 /* Sources */,
+				0F3EAFEE2ED2000500A8CC86 /* Frameworks */,
+				0F3EAFEF2ED2000500A8CC86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0F3EAFF62ED2000500A8CC86 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0F3EAFF22ED2000500A8CC86 /* RecipeeTests */,
+			);
+			name = RecipeeTests;
+			packageProductDependencies = (
+			);
+			productName = RecipeeTests;
+			productReference = 0F3EAFF12ED2000500A8CC86 /* RecipeeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -77,11 +150,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
-				LastUpgradeCheck = 2600;
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					0F3344AE2E8C4E4A00EAD4C1 = {
 						CreatedOnToolsVersion = 26.0.1;
+					};
+					0F3EAFF02ED2000500A8CC86 = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 0F3344AE2E8C4E4A00EAD4C1;
 					};
 				};
 			};
@@ -100,12 +177,20 @@
 			projectRoot = "";
 			targets = (
 				0F3344AE2E8C4E4A00EAD4C1 /* Recipee */,
+				0F3EAFF02ED2000500A8CC86 /* RecipeeTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0F3344AD2E8C4E4A00EAD4C1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F3EAFEF2ED2000500A8CC86 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +207,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0F3EAFED2ED2000500A8CC86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0F3EAFF62ED2000500A8CC86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0F3344AE2E8C4E4A00EAD4C1 /* Recipee */;
+			targetProxy = 0F3EAFF52ED2000500A8CC86 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0F3344B82E8C4E4B00EAD4C1 /* Debug */ = {
@@ -184,6 +284,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -241,6 +342,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -312,6 +414,54 @@
 			};
 			name = Release;
 		};
+		0F3EAFF82ED2000500A8CC86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVTZ333L9K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.omerkose.RecipeeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recipee.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recipee";
+			};
+			name = Debug;
+		};
+		0F3EAFF92ED2000500A8CC86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVTZ333L9K;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.omerkose.RecipeeTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Recipee.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Recipee";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -329,6 +479,15 @@
 			buildConfigurations = (
 				0F3344BB2E8C4E4B00EAD4C1 /* Debug */,
 				0F3344BC2E8C4E4B00EAD4C1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0F3EAFF72ED2000500A8CC86 /* Build configuration list for PBXNativeTarget "RecipeeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F3EAFF82ED2000500A8CC86 /* Debug */,
+				0F3EAFF92ED2000500A8CC86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

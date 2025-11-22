@@ -7,22 +7,28 @@
 
 import Foundation
 
-enum NetworkError: Error {
+enum NetworkError: Error, LocalizedError {
     case invalidUrl
     case invalidResponse
     case requestFailed(Error)
     case decodingFailed(Error)
+    case serverError(statusCode: Int)
+    case noInternet
     
     var errorDescription: String? {
         switch self {
         case .invalidUrl:
-            return "The URL is invalid"
+            return "The URL is invalid."
         case .invalidResponse:
-            return "The server response was invalid"
+            return "The server response was invalid."
         case .requestFailed(let error):
             return "Network request failed: \(error.localizedDescription)"
         case .decodingFailed(let error):
             return "Failed to decode response: \(error.localizedDescription)"
+        case .serverError(let statusCode):
+            return "Server returned an error with status code: \(statusCode)"
+        case .noInternet:
+            return "No internet connection. Please check your settings."
         }
     }
 }
@@ -37,18 +43,28 @@ final class NetworkService: NetworkServiceProtocol {
             throw NetworkError.invalidUrl
         }
         
-        let (data, response) = try await URLSession.shared.data(from: url)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw NetworkError.invalidResponse
-        }
-        
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            let (data, response) = try await URLSession.shared.data(from: url)
             
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw NetworkError.serverError(statusCode: httpResponse.statusCode)
+            }
+            
+            do {
+                return try JSONDecoder().decode(T.self, from: data)
+            } catch {
+                throw NetworkError.decodingFailed(error)
+            }
+        } catch let error as URLError where error.code == .notConnectedToInternet {
+            throw NetworkError.noInternet
+        } catch let error as NetworkError {
+            throw error
         } catch {
-            throw NetworkError.decodingFailed(error)
-            
+            throw NetworkError.requestFailed(error)
         }
     }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 struct SearchView: View {
     @EnvironmentObject var searchViewModel: SearchViewModel
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
-    @AppStorage("searchHistoryEnabled") private var searchHistoryEnabled = true
+    @AppStorage(Constants.UserDefaults.searchHistoryEnabled) private var searchHistoryEnabled = true
     @State private var isSuggestionsPresented = true
     @State private var showingFilters = false
     
@@ -60,6 +60,17 @@ struct SearchView: View {
                 if searchViewModel.isLoading {
                     LoadingView("Searching...", fullScreen: false)
                         .frame(minHeight: 400)
+                } else if let errorMessage = searchViewModel.errorMessage {
+                    ContentUnavailableView {
+                        Label("Search Failed", systemImage: "exclamationmark.triangle")
+                    } description: {
+                        Text(errorMessage)
+                    } actions: {
+                        Button("Try Again") {
+                            searchViewModel.commitSearch()
+                        }
+                    }
+                    .padding()
                 } else if !searchViewModel.hasSearched {
                     ScrollView {
                         VStack(spacing: 24) {

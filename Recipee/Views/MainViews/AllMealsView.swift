@@ -29,22 +29,30 @@ struct AllMealsView: View {
                         LoadingView("Loading meals...")
                         
                     case .loaded(let meals):
-                        ScrollView(.vertical) {
-                            LazyVStack(alignment: .leading, spacing: 12) {
-                                ForEach(meals) { meal in
-                                    NavigationLink {
-                                        MealDetailView(meal: meal)
-                                    } label: {
-                                        MealsDetailedListRowView(meal: meal)
-                                    }
-                                    .buttonStyle(.plain)
-                                    
-                                } //: Loop
-                            } //: LazyVstack
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            
-                        } //: ScrollView
+                        if meals.isEmpty {
+                            ContentUnavailableView {
+                                Label("No Meals Found", systemImage: "fork.knife")
+                            } description: {
+                                Text("There are no meals starting with '\(selectedLetter.uppercased())'.")
+                            }
+                        } else {
+                            ScrollView(.vertical) {
+                                LazyVStack(alignment: .leading, spacing: 12) {
+                                    ForEach(meals) { meal in
+                                        NavigationLink {
+                                            MealDetailView(meal: meal)
+                                        } label: {
+                                            MealsDetailedListRowView(meal: meal)
+                                        }
+                                        .buttonStyle(.plain)
+                                        
+                                    } //: Loop
+                                } //: LazyVstack
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                
+                            } //: ScrollView
+                        }
                         
                     case .error(let message):
                         ServiceErrorView(message: message) {

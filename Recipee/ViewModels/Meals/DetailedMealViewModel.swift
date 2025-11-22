@@ -50,7 +50,7 @@ class DetailedMealViewModel: ObservableObject {
                 )
                 
                 guard let meals = response.meals else {
-                    state = .error("No meals found.")
+                    state = .loaded([])
                     return
                 }
                 
