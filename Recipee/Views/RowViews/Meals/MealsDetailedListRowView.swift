@@ -10,72 +10,93 @@ import SwiftUI
 /// List element to display a meal with `Origin`, `Category` and `Tags`.
 struct MealsDetailedListRowView: View {
     var meal: DetailedMeal
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     
     var body: some View {
-        HStack(spacing: 12) {
-            
-            // Image
-            AsyncImage(url: meal.thumbnailURL) { image in
-                image
-                    .resizable()
-                    .scaledToFill()
-            } placeholder: {
-                ProgressView()
-            }
-            .frame(width: 100, height: 100)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            
-            // Name & Description
-            VStack(alignment: .leading, spacing: 8) {
-                Text(meal.name)
-                    .font(.headline)
+        ZStack(alignment: .topTrailing) {
+            HStack(spacing: 12) {
                 
-                // Origin
-                if let area = meal.area, !area.isEmpty {
-                    Text(area)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                // Image
+                AsyncImage(url: meal.thumbnailURL) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    ProgressView()
                 }
+                .frame(width: 100, height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
                 
-                // Category
-                if let category = meal.category {
-                    Text(category)
-                        .font(.caption)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(
-                            Capsule()
-                                .fill(.tertiary)
-                        )
-                }
-                
-                // Tags
-                if !meal.tagsList.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(meal.tagsList, id: \.self) { tag in
-                                Text(tag)
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color.colorForTag(tag))
-                                    )
+                // Name & Description
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(meal.name)
+                        .font(.headline)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    // Origin
+                    if let area = meal.area, !area.isEmpty {
+                        Text(area)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    // Category
+                    if let category = meal.category {
+                        Text(category)
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                Capsule()
+                                    .fill(.tertiary)
+                            )
+                    }
+                    
+                    // Tags
+                    if !meal.tagsList.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(meal.tagsList, id: \.self) { tag in
+                                    Text(tag)
+                                        .font(.caption)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(
+                                            Capsule()
+                                                .fill(Color.colorForTag(tag))
+                                        )
+                                }
                             }
                         }
                     }
-                }
-            } //: VStack
-            .frame(maxWidth: .infinity, alignment: .leading)
-        } //: HStack
-        .padding(12)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                } //: VStack
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.trailing, 40) // Add space for favorite button
+            } //: HStack
+            
+            // Favorite button in top-right corner
+            FavoriteButton(
+                isFavorite: favoritesViewModel.isMealFavorite(meal)
+            ) {
+                favoritesViewModel.toggleMealFavorite(meal)
+            }
+            .padding(.top, 8)
+            .padding(.trailing, 8)
+        } //: ZStack
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(.secondarySystemBackground))
+                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
+        )
     }
 }
 
@@ -113,4 +134,5 @@ struct MealsDetailedListRowView: View {
     )
     
     MealsDetailedListRowView(meal: meal)
+        .environmentObject(FavoritesViewModel())
 }

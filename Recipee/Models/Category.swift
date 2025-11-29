@@ -29,4 +29,8 @@ struct Category: Codable, Identifiable, Sendable {
 // MARK: - CategoriesResponse
 struct CategoriesResponse: Codable, Sendable {
     let categories: [Category]?
+    
+    enum CodingKeys: String, CodingKey {
+        case categories = "categories"
+    }
 }

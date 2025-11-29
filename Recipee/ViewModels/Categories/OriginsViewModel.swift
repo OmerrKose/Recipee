@@ -23,18 +23,22 @@ class OriginsViewModel: ObservableObject {
         case nameDescending
     }
     
-    // MARK: Variables
+    // MARK: - Published Properties
+    /// The list of all origins fetched from the API
     @Published var origins: [Origin] = []
+    /// Error message displayed when fetching fails
     @Published var errorMessage: String?
+    /// Current loading state of the view model
     @Published var state: LoadingState = .idle
+    /// Current sort order for the origins list
     @Published var sortOrder: SortOrder = .nameAscending
     
+    // MARK: - Private Properties
     private let networkService: NetworkServiceProtocol
+    private var fetchTask: Task<Void, Never>?
     
-    init(networkService: NetworkServiceProtocol = NetworkService()) {
-        self.networkService = networkService
-    }
-    
+    // MARK: - Computed Properties
+    /// Returns origins sorted according to the current sort order
     var sortedOrigins: [Origin] {
         guard case .loaded(let origins) = state else {
             return []
@@ -48,22 +52,52 @@ class OriginsViewModel: ObservableObject {
         }
     }
     
-    // MARK: Service Calls
+    
+    // MARK: - Initializer
+    /// Initializes the view model with a network service
+    /// - Parameter networkService: The network service used to fetch data
+    init(networkService: NetworkServiceProtocol = NetworkService()) {
+        self.networkService = networkService
+    }
+    
+    // MARK: - Service Calls
+    /// Fetches all origins from the API
+    /// - Note: This method implements task deduplication to prevent multiple simultaneous requests
     func fetchOrigins() async {
-        state = .loading
-        errorMessage = nil
+        // Cancel any existing fetch task
+        fetchTask?.cancel()
         
-        do {
-            let response: OriginsResponse = try await self.networkService.fetch(OriginsResponse.self, from: .origins)
+        // Create new task
+        fetchTask = Task {
+            state = .loading
+            errorMessage = nil
             
-            guard let origins = response.origins else {
-                state = .error("No origins found.")
-                return
+            do {
+                let response: OriginsResponse = try await self.networkService.fetch(OriginsResponse.self, from: .origins)
+                
+                guard let origins = response.origins else {
+                    state = .error("No origins found.")
+                    return
+                }
+                
+                state = .loaded(origins)
+            } catch {
+                // Handle cancellation specifically - don't update state if cancelled
+                if error is CancellationError {
+                    return
+                }
+                
+                // Only update state if task is not cancelled
+                if !Task.isCancelled {
+                    if let networkError = error as? NetworkError {
+                        state = .error(networkError.errorDescription ?? "Network error occurred")
+                    } else {
+                        state = .error("Failed to fetch origins: \(error.localizedDescription)")
+                    }
+                }
             }
-            
-            state = .loaded(origins)
-        } catch {
-            state = .error(error.localizedDescription)
         }
+        
+        await fetchTask?.value
     }
 }

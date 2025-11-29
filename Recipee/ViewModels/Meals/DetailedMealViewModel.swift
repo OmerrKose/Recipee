@@ -17,13 +17,15 @@ class DetailedMealViewModel: ObservableObject {
         case error(String)
     }
     
-    // MARK: Variables
+    // MARK: - Variables
     @Published var meals: [DetailedMeal] = []
     @Published var state: LoadingState = .idle
     @Published var errorMessage: String?
     
     private let networkService: NetworkServiceProtocol
+    private var fetchTask: Task<Void, Never>?
     
+    // MARK: - Initializer
     init(networkService: NetworkServiceProtocol = NetworkService()) {
         self.networkService = networkService
     }
@@ -33,47 +35,87 @@ class DetailedMealViewModel: ObservableObject {
     ///   - Parameters:
     ///     - letter: The letter that meals start with.
     func fetchMeals(startingWith letter: String = "a") async {
-        state = .loading
-        errorMessage = nil
+        // Cancel any existing fetch task
+        fetchTask?.cancel()
         
-        do {
-            let response: DetailedMealsResponse = try await self.networkService.fetch(
-                DetailedMealsResponse.self,
-                from: .allMeals(letter: letter)
-            )
+        // Create new task
+        fetchTask = Task {
+            state = .loading
+            errorMessage = nil
             
-            guard let meals = response.meals else {
-                state = .error("No meals found.")
-                return
+            do {
+                let response: DetailedMealsResponse = try await self.networkService.fetch(
+                    DetailedMealsResponse.self,
+                    from: .allMeals(letter: letter)
+                )
+                
+                guard let meals = response.meals else {
+                    state = .loaded([])
+                    return
+                }
+                
+                state = .loaded(meals)
+            } catch {
+                // Handle cancellation specifically - don't update state if cancelled
+                if error is CancellationError {
+                    return
+                }
+                
+                // Only update state if task is not cancelled
+                if !Task.isCancelled {
+                    if let networkError = error as? NetworkError {
+                        state = .error(networkError.errorDescription ?? "Network error occurred")
+                    } else {
+                        state = .error("Failed to fetch meals: \(error.localizedDescription)")
+                    }
+                }
             }
-            
-            state = .loaded(meals)
-        } catch {
-            state = .error(error.localizedDescription)
         }
+        
+        await fetchTask?.value
     }
     
     /// Retrieves meal by given id.
     ///  - Parameters:
     ///     - id: The id of the meal to be retrieved.
     func fetchMeals(for id: String) async {
-        state = .loading
-        errorMessage = nil
+        // Cancel any existing fetch task
+        fetchTask?.cancel()
         
-        do {
-            let response: DetailedMealsResponse = try await self.networkService.fetch(
-                DetailedMealsResponse.self,
-                from: .mealById(id: id)
-            )
+        // Create new task
+        fetchTask = Task {
+            state = .loading
+            errorMessage = nil
             
-            guard let meals = response.meals else {
-                state = .error("No meals found.")
-                return
+            do {
+                let response: DetailedMealsResponse = try await self.networkService.fetch(
+                    DetailedMealsResponse.self,
+                    from: .mealById(id: id)
+                )
+                
+                guard let meals = response.meals else {
+                    state = .error("No meals found.")
+                    return
+                }
+                
+                state = .loaded(meals)
+            } catch {
+                // Handle cancellation specifically - don't update state if cancelled
+                if error is CancellationError {
+                    return
+                }
+                
+                // Only update state if task is not cancelled
+                if !Task.isCancelled {
+                    if let networkError = error as? NetworkError {
+                        state = .error(networkError.errorDescription ?? "Network error occurred")
+                    } else {
+                        state = .error("Failed to fetch meal: \(error.localizedDescription)")
+                    }
+                }
             }
-            
-            state = .loaded(meals)
-        } catch {
-            state = .error(error.localizedDescription)
         }
+        
+        await fetchTask?.value
     }
 }

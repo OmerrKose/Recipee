@@ -20,7 +20,7 @@ struct OriginMealsListView: View {
                 Color.clear.task { await originsMealsViewModel.fetchMeals(from: originName) }
                 
             case .loading:
-                ProgressView("Loading...")
+                LoadingView("Loading meals...")
                 
             case .loaded:
                 ScrollView(.vertical) {
@@ -46,7 +46,7 @@ struct OriginMealsListView: View {
                 
             } //: Switch
         } //: ZStack
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle(originName)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

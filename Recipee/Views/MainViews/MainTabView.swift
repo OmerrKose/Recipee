@@ -11,6 +11,8 @@ import SwiftUI
 struct MainTabView: View {
     @EnvironmentObject var categoriesViewModel: MealCategoriesViewModel
     @EnvironmentObject var allMealsViewMdodel: DetailedMealViewModel
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    @StateObject private var searchViewModel = SearchViewModel()
     
     var body: some View {
         TabView {
@@ -26,17 +28,34 @@ struct MainTabView: View {
             
             // Favorites
             Tab("Favorites", systemImage: "star.fill") {
-                EmptyView() // TODO: Add favorites
+                FavoritesView()
+            }
+            
+            // Settings
+            Tab("Settings", systemImage: "gear") {
+                SettingsView()
+                    .environmentObject(searchViewModel)
+                    .environmentObject(favoritesViewModel)
             }
             
             // Search
             Tab("Search", systemImage: "magnifyingglass", role: .search) {
-                NavigationStack {
-                    SearchView()
-                }
+                SearchView()
+                    .environmentObject(searchViewModel)
+                    .searchable(
+                        text: $searchViewModel.searchText,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Search meals, categories, origins..."
+                    )
+                    .onSubmit(of: .search) {
+                        searchViewModel.commitSearch()
+                    }
             }
         } //: TabView
         .tabBarMinimizeBehavior(.onScrollDown)
+        .onAppear {
+            searchViewModel.favoritesViewModel = favoritesViewModel
+        }
     }
 }
 
@@ -44,4 +63,5 @@ struct MainTabView: View {
     MainTabView()
         .environmentObject(MealCategoriesViewModel())
         .environmentObject(DetailedMealViewModel())
+        .environmentObject(FavoritesViewModel())
 }

@@ -14,6 +14,7 @@ nonisolated enum MealDBEndpoint: Sendable {
     case mealByCategory(category: String)
     case mealByOrigin(country: String)
     case origins
+    case ingredients
     
     var url: URL? {
         var components = URLComponents()
@@ -38,8 +39,11 @@ nonisolated enum MealDBEndpoint: Sendable {
         case .mealByCategory(let category):
             components.path = "/api/json/v1/1/filter.php"
             components.queryItems = [URLQueryItem(name: "c", value: category)]
+        case .ingredients:
+            components.path = "/api/json/v1/1/list.php"
+            components.queryItems = [URLQueryItem(name: "i", value: "list")]
         }
-
+        
         return components.url
     }
 }

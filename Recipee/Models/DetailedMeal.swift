@@ -90,4 +90,8 @@ struct DetailedMeal: Codable, Identifiable, Sendable {
 // MARK: - MealResponse
 struct DetailedMealsResponse: Codable, Sendable {
     let meals: [DetailedMeal]?
+    
+    enum CodingKeys: String, CodingKey {
+        case meals = "meals"
+    }
 }

@@ -10,6 +10,8 @@ import SwiftUI
 struct MealDetailView: View {
     var meal: DetailedMeal
     
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    
     var body: some View {
         ScrollView(.vertical) {
             
@@ -17,116 +19,170 @@ struct MealDetailView: View {
             AsyncImage(url: meal.thumbnailURL ) { phase in
                 switch phase {
                 case .empty:
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    ZStack {
+                        Color(.secondarySystemBackground)
+                        ProgressView()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .success(let image):
                     image
                         .resizable()
+                        .scaledToFill()
                         .frame(maxWidth: .infinity)
                 case .failure:
-                    Image(systemName: "photo")
-                        .foregroundStyle(.gray)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    ZStack {
+                        Color(.systemGray5)
+                        Image(systemName: "photo")
+                            .font(.largeTitle)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 @unknown default:
                     EmptyView()
                 }
-            }
+            } //: AsyncImage
             .frame(height: 300)
             .clipped()
             .background(Color(.systemBackground))
             .shadow(radius: 4)
             
-            LazyVStack(alignment: .leading, spacing: 12) {
+            LazyVStack(alignment: .leading, spacing: 16) {
                 // Meal name
                 Text(meal.name)
                     .font(.largeTitle)
-                    .fontWeight(.semibold)
+                    .fontWeight(.bold)
                     .multilineTextAlignment(.leading)
-
-                // Meal origin
-                if let area = meal.area {
-                    TitleAndExplanationView(
-                        title: "Origin:",
-                        explanation: area,
-                        imageName: "flag"
-                    )
-                }
+                    .padding(.bottom, 4)
                 
-                // Category
-                if let category = meal.category {
-                    TitleAndExplanationView(
-                        title: "Category:",
-                        explanation: category,
-                        imageName: "list.bullet.rectangle"
-                    )
-                }
-                
-                // Tags
-                if let _ = meal.tags {
-                    TitleAndExplanationView(
-                        title: "Tags:",
-                        explanation: meal.tagsList.joined(separator: " • "),
-                        imageName: "tag"
-                    )
-                }
+                // Meal metadata
+                VStack(alignment: .leading, spacing: 12) {
+                    // Origin
+                    if let area = meal.area, !area.isEmpty {
+                        TitleAndExplanationView(
+                            title: "Origin:",
+                            explanation: area,
+                            imageName: "flag.fill",
+                            iconColor: .blue
+                        )
+                    }
+                    
+                    // Category
+                    if let category = meal.category, !category.isEmpty {
+                        TitleAndExplanationView(
+                            title: "Category:",
+                            explanation: category,
+                            imageName: "list.bullet.rectangle.fill",
+                            iconColor: .orange
+                        )
+                    }
+                    
+                    // Tags
+                    if !meal.tagsList.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            TitleAndExplanationView(
+                                title: "Tags:",
+                                imageName: "tag.fill",
+                                iconColor: .purple
+                            )
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(meal.tagsList, id: \.self) { tag in
+                                        Text(tag)
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(
+                                                Capsule()
+                                                    .fill(Color.colorForTag(tag))
+                                            )
+                                    } //: ForEach
+                                } //: HStack
+                            } //: ScrollView
+                        } //: VStack
+                    }
+                } //: VStack
                 
                 Spacer()
                 
                 // Ingredients
                 if !meal.ingredients.isEmpty {
-                    TitleAndExplanationView(
-                        title: "Ingredients:",
-                        imageName: "fork.knife"
-                    )
-                    IngredientsListView(ingredients: meal.ingredients)
+                    VStack(alignment: .leading, spacing: 12) {
+                        TitleAndExplanationView(
+                            title: "Ingredients:",
+                            imageName: "fork.knife",
+                            iconColor: .red
+                        )
+                        
+                        IngredientsBulletListView(ingredients: meal.ingredients)
+                    } //: VStack
                 }
                 
                 Spacer()
                 
                 // Instructions
-                if let instructions = meal.instructions {
-                    VStack(alignment: .leading, spacing: 8) {
+                if let instructions = meal.instructions, !instructions.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
                         TitleAndExplanationView(
                             title: "Instructions:",
-                            imageName: "book"
+                            imageName: "book.fill",
+                            iconColor: .green
                         )
                         
                         Text(instructions)
-                            .font(.default)
+                            .font(.body)
                             .multilineTextAlignment(.leading)
-                    }
-                }
+                            .lineSpacing(4)
+                    } //: VStack
+                } //: if
                 
                 Spacer()
                 
-                // Youtube link
-                if let link = meal.youtubeURL, !link.isEmpty {
-                    TitleAndExplanationView(
-                        title: "Youtube",
-                        imageName: "video",
-                        link: link
-                    )
-                }
-                
-                if let source = meal.source, !source.isEmpty {
-                    TitleAndExplanationView(
-                        title: "Source",
-                        explanation: source,
-                        imageName: "globe",
-                        link: source,
-                    )
-                }
-            } //: VStack
+                // Links section
+                VStack(alignment: .leading, spacing: 12) {
+                    // YouTube link
+                    if let link = meal.youtubeURL, !link.isEmpty {
+                        TitleAndExplanationView(
+                            title: "YouTube Tutorial",
+                            imageName: "video.fill",
+                            link: link,
+                            iconColor: .red
+                        )
+                    }
+                    
+                    // Source link
+                    if let source = meal.source, !source.isEmpty {
+                        TitleAndExplanationView(
+                            title: "Source",
+                            explanation: source,
+                            imageName: "globe",
+                            link: source,
+                            iconColor: .blue
+                        )
+                    }
+                } //: VStack
+            } //: LazyVStack
             .padding(.horizontal)
             .padding(.bottom)
             
         } //: ScrollView
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.systemBackground))
         .navigationTitle(meal.name)
         .navigationBarTitleDisplayMode(.inline)
         .scrollIndicators(.hidden)
         .ignoresSafeArea(edges: .top)
-    }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                FavoriteButton(
+                    isFavorite: favoritesViewModel.isMealFavorite(meal)
+                ) {
+                    favoritesViewModel.toggleMealFavorite(meal)
+                } //: FavoriteButton
+            } //: ToolbarItem
+        } //: toolbar
+    } //: Body
 }
 
 #Preview {
@@ -162,5 +218,8 @@ struct MealDetailView: View {
         measure10: "", measure11: "", measure12: "", measure13: "", measure14: "", measure15: "", measure16: "", measure17: "", measure18: "", measure19: "", measure20: ""
     )
     
-    MealDetailView(meal: meal)
+    NavigationStack {
+        MealDetailView(meal: meal)
+            .environmentObject(FavoritesViewModel())
+    }
 }
