@@ -56,8 +56,14 @@ Recipee/
 │   ├── CustomViews/         # Reusable components (LoadingView, FavoriteButton, etc.)
 │   ├── RowViews/           # List item components
 │   └── ErrorViews/         # Error state displays
-├── Helpers/                 # Utilities and networking
-│   └── NetworkLayer.swift   # Network service and error handling
+├── Network/                 # Network layer
+│   ├── NetworkLayer.swift   # Network service and error handling
+│   └── MealDBEndpoint.swift # API endpoints
+├── Helpers/                 # Utilities
+│   └── Constants.swift      # App constants
+├── Tests/                   # Unit Tests
+│   ├── ViewModels/          # ViewModel tests
+│   └── Mocks/               # Mock services
 ├── Extensions/             # Swift extensions (Colors, Views)
 └── Assets.xcassets/        # App icons and images
 ```
@@ -76,8 +82,8 @@ Recipee/
 
 ### Prerequisites
 - Xcode 16.0 or later
-- iOS 26.0 or later
-- macOS Tahoe 26.0 or later (for development)
+- iOS 17.0 or later
+- macOS 14.0 (Sonoma) or later (for development)
 
 ### Installation
 1. Clone the repository
@@ -133,10 +139,6 @@ Recipee/
 - **Pure SwiftUI**: Native iOS implementation
 - **System Frameworks Only**: Foundation, SwiftUI, Combine
 - **Network Layer**: Custom URLSession-based implementation
-
-## 📱 Screenshots
-
-*Coming soon...*
 
 ## 📄 License
 
